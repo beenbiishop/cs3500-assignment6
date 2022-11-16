@@ -10,36 +10,29 @@
 
 ## View
 
-1. [ ] xxx
+### New Methods
 
-### Menu Items
+1. Add Image
+    * Adds an image tab with the image file name as the key and the image object as the value
+    * Checks to ensure the image file name is unique
+2. Update Image
+    * Replaces the image with the given file name with a new image object
+    * Checks to ensure the image file name is already a tab
+3. Remove Image
+    * Removes the image tab from the view with the given file name
+    * Checks to ensure the image file name is already a tab
+4. Add Transformation
+    * Adds a transformation to the list of transformations with the string from the controller as
+      the key and the title to display and a tooltip
+5. Render Dialog
+    * Renders a popup with the type (success, warning, danger) as an enum and the string to display
+    * All popups just have an "ok" button to be closed by the user
+6. Prompt input
+7. Prompt image pick
+   * Takes in type as an enum (load/save)
+   * Returns string of file path or throws error if cancelled
 
-1. Image Processor
-    * About the Image Processor -> popup with about
-    * Exit -> exit the program
-2. File
-    * Load -> file picker to load image
-    * Save -> file picker to save image
-3. Transform
-    * Flip Horizontally -> flip the current image horizontally
-    * Flip Vertically -> flip the current image vertically
-    * Brighten -> brighten the current image
-    * Darken -> darken the current image
-    * Greyscale -> convert the current image to greyscale
-    * Sepia -> convert the current image to sepia
-    * Blur -> blur the current image
-    * Sharpen -> sharpen the current image
-    * Visualize
-        * Red -> visualize the red channel
-        * Green -> visualize the green channel
-        * Blue -> visualize the blue channel
-        * Value -> visualize the value channel
-        * Intensity -> visualize the intensity channel
-        * Luma -> visualize the luma channel
-4. Help
-    * Loading/Saving images -> popup with instructions
-    * Transforming images -> popup with instructions
-    * About the Image Processor -> popup with about
+### Existing Methods
 
 ## Testing
 
