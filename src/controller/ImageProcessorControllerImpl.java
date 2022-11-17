@@ -59,7 +59,11 @@ public class ImageProcessorControllerImpl implements ImageProcessorController {
 
   @Override
   public void run() {
-    this.view.renderWelcome();
+    this.view.renderMessage("Welcome to the Image Processor!" + System.lineSeparator());
+    this.view.renderMessage("* Enter \"menu\" to see the list of supported commands or \"quit\""
+        + " to exit the program" + System.lineSeparator()
+        + "* After entering a command, hit return to process it" + System.lineSeparator()
+        + "Command: ");
     while (scan.hasNext()) {
       String command = scan.next();
       if (command.equalsIgnoreCase("q") || command.equalsIgnoreCase("quit")) {

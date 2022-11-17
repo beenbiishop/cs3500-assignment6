@@ -8,13 +8,13 @@
 
 ## Controller
 
-1. [ ] Add renderWelcome as a private method to the controller
-2. [ ] Update renderMenu command to use renderMessage instead
+1. [x] Add renderWelcome as a private method to the controller
+2. [x] Update renderMenu command to use renderMessage instead
 
 ## View
 
-1. [ ] Remove renderMenu and renderWelcome from interface
-2. [ ] Remove renderMenu and renderWelcome from implementation
+1. [x] Remove renderMenu and renderWelcome from interface
+2. [x] Remove renderMenu and renderWelcome from implementation
 3. [ ] Add new interface that extends ImageProcessorView
 4. [ ] Add new implementation that implements the new interface
 

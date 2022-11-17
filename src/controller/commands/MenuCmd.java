@@ -26,7 +26,44 @@ public class MenuCmd implements ImageProcessorCmd {
 
   @Override
   public void execute() {
-    this.view.renderMenu();
+    this.view.renderMessage("Supported commands:" + System.lineSeparator());
+    this.view.renderMessage("* \"quit\" - quits the program" + System.lineSeparator());
+    this.view.renderMessage("* \"menu\" - displays the menu of commands" + System.lineSeparator());
+    this.view.renderMessage(
+        "* \"load\" <path> <filename> - loads an image (identified by given name) into the"
+            + " processor" + System.lineSeparator());
+    this.view.renderMessage(
+        "* \"save\" <path> <filename> - saves an image to an output file" + System.lineSeparator());
+    this.view.renderMessage(
+        "* \"visualize-<component>\" <filename> <new filename> - transforms an image to a new"
+            + " greyscale image using a chosen component" + System.lineSeparator());
+    this.view.renderMessage(
+        "    * component can be \"red\", \"green\", \"blue\", \"value\", \"intensity\", or \"luma\""
+            + System.lineSeparator());
+    this.view.renderMessage(
+        "* \"brighten\" <amount> <filename> <new filename> - transforms an image"
+            + " to a new image brightened by an amount" + System.lineSeparator());
+    this.view.renderMessage(
+        "* \"darken\" <amount> <filename> <new filename> - transforms an image to a "
+            + "new image darkened by an amount" + System.lineSeparator());
+    this.view.renderMessage(
+        "* \"horizontal-flip\" <filename> <new filename> - horizontally flips an image"
+            + " to a new image" + System.lineSeparator());
+    this.view.renderMessage(
+        "* \"vertical-flip\" <filename> <new filename> - vertically flips an image"
+            + " to a new image" + System.lineSeparator());
+    this.view.renderMessage(
+        "* \"greyscale\" <filename> <new filename> - transforms an image to a new greyscale"
+            + " filtered image" + System.lineSeparator());
+    this.view.renderMessage(
+        "* \"sepia\" <filename> <new filename> - transforms an image to a new sepia"
+            + " filtered image" + System.lineSeparator());
+    this.view.renderMessage(
+        "* \"blur\" <filename> <new filename> - transforms an image to a new blurred image"
+            + System.lineSeparator());
+    this.view.renderMessage(
+        "* \"sharpen\" <filename> <new filename> - transforms an image to a new sharpened image"
+            + System.lineSeparator());
     this.view.renderMessage("Command: ");
   }
 
