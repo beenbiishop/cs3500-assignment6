@@ -37,7 +37,7 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
   }
 
   @Override
-  public void displayImage(String name, BufferedImage image) {
+  public void displayImage(String name, BufferedImage image, int[][] histogram) {
 
   }
 

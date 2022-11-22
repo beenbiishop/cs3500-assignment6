@@ -26,10 +26,11 @@ public interface ImageProcessorGui extends ImageProcessorView {
    * with the new image, otherwise a new tab will be added (like a map).
    * </p>
    *
-   * @param name  the name to identify this image by
-   * @param image the image to render in the preview panel
+   * @param name      the name to identify this image by
+   * @param image     the image to render in the preview panel
+   * @param histogram the data to render in the histogram panel
    */
-  void displayImage(String name, BufferedImage image);
+  void displayImage(String name, BufferedImage image, int[][] histogram);
 
 
   /**
