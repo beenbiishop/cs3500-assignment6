@@ -2,8 +2,8 @@ package view;
 
 import controller.ImageProcessorGuiController;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.List;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * This interface represents a view of the Image Processor that implements the graphical user
@@ -55,14 +55,31 @@ public interface ImageProcessorGui extends ImageProcessorView {
    * equally sized list will be returned with the response to each question. If a user did not
    * answer any of the questions, an empty string will be returned in its' place.</p>
    *
-   * @param questions
-   * @return
+   * @param questions the list of questions to ask
+   * @param error     an optional error message to display (will not display if null)
+   * @return the list of inputted respond
    */
   String[] renderInput(List<String> questions, String error);
 
+  /**
+   * Renders a popup prompting a user to choose a file.
+   *
+   * @param filter the file types allowed to be loaded
+   * @return a string with the file path of the selected file or null if dismissed
+   */
+  String loadFile(FileNameExtensionFilter filter);
 
-  File loadFile(String prompt, String fileTypes);
+  /**
+   * Renders a popup prompting a user to choose a file.
+   *
+   * @param filter the file types allowed to be loaded
+   * @return a string with the file path of the selected file or null if dismissed
+   */
+  void saveFile(FileNameExtensionFilter filter);
 
+  /**
+   * Represents a type of dialog's styling that can be displayed to a user.
+   */
   enum DialogType {
     Success, Warning, Danger, Note
   }
