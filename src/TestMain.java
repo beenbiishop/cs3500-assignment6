@@ -21,6 +21,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.border.CompoundBorder;
 import model.Image;
+import model.ImageUtils;
 
 public class TestMain extends JFrame {
 
@@ -95,9 +96,9 @@ public class TestMain extends JFrame {
     Image image2 = handler.process("res/Koala.png");
     Image image3 = handler.process("res/Manhattan.png");
 
-    label1.setIcon(new ImageIcon(image1.getBufferedImage()));
-    label2.setIcon(new ImageIcon(image2.getBufferedImage()));
-    label3.setIcon(new ImageIcon(image3.getBufferedImage()));
+    label1.setIcon(new ImageIcon(ImageUtils.getBufferedImage(image1)));
+    label2.setIcon(new ImageIcon(ImageUtils.getBufferedImage(image2)));
+    label3.setIcon(new ImageIcon(ImageUtils.getBufferedImage(image3)));
 
     JScrollPane panel1 = new JScrollPane(label1);
     JScrollPane panel2 = new JScrollPane(label2);
