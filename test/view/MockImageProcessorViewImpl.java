@@ -3,6 +3,8 @@ package view;
 /**
  * Represents a mock view for the image processor that always throws an exception.
  */
+// TODO: Document removal of renderWelcome() mock method
+// TODO: Document removal of renderMenu() mock method
 public class MockImageProcessorViewImpl implements ImageProcessorView {
 
   /**
@@ -25,27 +27,6 @@ public class MockImageProcessorViewImpl implements ImageProcessorView {
    */
   @Override
   public void renderMessage(String message) throws IllegalStateException {
-    throw new IllegalStateException("Unable to render message");
-  }
-
-  /**
-   * Implements renderWelcome from the ImageProcessorView interface. Always throws an exception.
-   *
-   * @throws IllegalStateException every time for testing
-   */
-  @Override
-  public void renderWelcome() throws IllegalStateException {
-    throw new IllegalStateException("Unable to render message");
-  }
-
-
-  /**
-   * Implements renderMenu from the ImageProcessorView interface. Always throws an exception.
-   *
-   * @throws IllegalStateException every time for testing
-   */
-  @Override
-  public void renderMenu() throws IllegalStateException {
     throw new IllegalStateException("Unable to render message");
   }
 }
