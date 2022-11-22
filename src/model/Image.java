@@ -36,4 +36,7 @@ public interface Image {
    */
   Image copy();
 
+
+  int[][] makeHistogram();
+
 }
