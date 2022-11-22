@@ -3,9 +3,15 @@ package view;
 import controller.ImageProcessorGuiController;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import view.panels.HistogramPanel;
 import view.panels.MessagePanel;
@@ -18,6 +24,7 @@ import view.panels.TransformationPanel;
 public class ImageProcessorGuiImpl implements ImageProcessorGui {
 
   private JFrame frame;
+  private JMenuBar menuBar;
   private PreviewPanel previewPanel;
   private TransformationPanel transformationPanel;
   private HistogramPanel histogramPanel;
@@ -29,6 +36,12 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
     this.frame.setPreferredSize(new Dimension(800, 600));
     this.frame.setMinimumSize(new Dimension(800, 600));
     this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    initMenu();
+    initPreviewPanel();
+    initSidebar();
+    initMessagePanel();
+    this.frame.pack();
+    this.frame.setVisible(true);
   }
 
   @Override
@@ -69,5 +82,77 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
   @Override
   public void renderMessage(String message) throws IllegalStateException {
 
+  }
+
+  /**
+   * Initializes the menu bar.
+   */
+  private void initMenu() {
+    this.menuBar = new JMenuBar();
+
+    // File Menu
+    JMenu fileMenu = new JMenu("File");
+    JMenuItem loadItem = new JMenuItem("Load");
+    loadItem.setMnemonic(KeyEvent.VK_L);
+    loadItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.META_DOWN_MASK));
+    fileMenu.add(loadItem);
+    JMenuItem saveItem = new JMenuItem("Save");
+    saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.META_DOWN_MASK));
+    fileMenu.add(saveItem);
+    JMenuItem removeItem = new JMenuItem("Remove");
+    removeItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.META_DOWN_MASK));
+    fileMenu.add(removeItem);
+    JMenuItem quitItem = new JMenuItem("Quit");
+    quitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.META_DOWN_MASK));
+    fileMenu.add(quitItem);
+
+    // Help Menu
+    JMenu helpMenu = new JMenu("Help");
+    JMenuItem helpItem = new JMenuItem("How to Use");
+    helpMenu.add(helpItem);
+    JMenuItem aboutItem = new JMenuItem("About Image Processor");
+    helpMenu.add(aboutItem);
+
+    this.menuBar.add(fileMenu);
+    this.menuBar.add(helpMenu);
+    this.frame.setJMenuBar(this.menuBar);
+  }
+
+  /**
+   * Initializes the preview panel.
+   */
+  private void initPreviewPanel() {
+    this.previewPanel = new PreviewPanel();
+    this.frame.add(this.previewPanel, BorderLayout.CENTER);
+  }
+
+  /**
+   * Initializes the sidebar with the transformation panel and the histogram panel.
+   */
+  private void initSidebar() {
+    initTransformationPanel();
+    initHistogramPanel();
+  }
+
+  /**
+   * Initializes the transformation panel.
+   */
+  private void initTransformationPanel() {
+
+  }
+
+  /**
+   * Initializes the histogram panel.
+   */
+  private void initHistogramPanel() {
+
+  }
+
+  /**
+   * Initializes the message panel.
+   */
+  private void initMessagePanel() {
+    this.messagePanel = new MessagePanel();
+    this.frame.add(this.messagePanel, BorderLayout.SOUTH);
   }
 }

@@ -26,12 +26,19 @@ public class PreviewPanel extends JTabbedPane {
    * @param image the image to be displayed
    */
   public void addImageTab(String title, BufferedImage image) {
+    if (title == null || title.length() == 0) {
+      throw new IllegalArgumentException("Title cannot be null or empty");
+    }
+    if (image == null) {
+      throw new IllegalArgumentException("Image cannot be null");
+    }
     JLabel label = new JLabel();
     label.setVerticalAlignment(JLabel.TOP);
     label.setHorizontalAlignment(JLabel.LEFT);
     label.setIcon(new ImageIcon(image));
     JScrollPane scrollPane = new JScrollPane(label);
     scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+    scrollPane.getHorizontalScrollBar().setUnitIncrement(16);
     this.addTab(title, scrollPane);
   }
 
@@ -41,6 +48,9 @@ public class PreviewPanel extends JTabbedPane {
    * @param title the title of the tab to remove
    */
   public void removeImageTab(String title) {
+    if (title == null || title.length() == 0) {
+      throw new IllegalArgumentException("Title cannot be null or empty");
+    }
     this.removeTabAt(this.indexOfTab(title));
   }
 
@@ -50,6 +60,9 @@ public class PreviewPanel extends JTabbedPane {
    * @param title the title of the tab to select
    */
   public void displayImageTab(String title) {
+    if (title == null || title.length() == 0) {
+      throw new IllegalArgumentException("Title cannot be null or empty");
+    }
     this.setSelectedIndex(this.indexOfTab(title));
   }
 }
