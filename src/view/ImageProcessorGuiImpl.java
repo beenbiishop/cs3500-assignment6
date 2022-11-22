@@ -4,6 +4,7 @@ import controller.ImageProcessorGuiController;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
+import java.util.List;
 import javax.swing.JFrame;
 import view.panels.HistogramPanel;
 import view.panels.MessagePanel;
@@ -26,7 +27,18 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
     this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
   }
 
+  @Override
   public void addFeatures(ImageProcessorGuiController features) {
+
+  }
+
+  @Override
+  public void displayImage(String name, BufferedImage image) {
+
+  }
+
+  @Override
+  public void removeImage(String name) {
 
   }
 
@@ -35,23 +47,18 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
 
   }
 
-  public void displayImage(String name, BufferedImage image) {
+  @Override
+  public void renderDialog(DialogType type, String message) {
 
   }
 
-  public void removeImage() {
+  @Override
+  public void renderInput(List<String> questions) {
 
   }
 
-  public void renderDialog() {
-
-  }
-
-  public void renderInput() {
-
-  }
-
-  public String pickFile() {
+  @Override
+  public String pickFile(String prompt, String fileTypes) {
     return "";
   }
 
