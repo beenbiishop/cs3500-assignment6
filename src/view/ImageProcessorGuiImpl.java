@@ -6,11 +6,15 @@ import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import javax.swing.JFrame;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import view.panels.HistogramPanel;
 import view.panels.MessagePanel;
 import view.panels.PreviewPanel;
 import view.panels.TransformationPanel;
 
+/**
+ * Represents an implementation of the {@link ImageProcessorGui} interface.
+ */
 public class ImageProcessorGuiImpl implements ImageProcessorGui {
 
   private JFrame frame;
@@ -38,13 +42,8 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
   }
 
   @Override
-  public void removeImage(String name) {
-
-  }
-
-  @Override
-  public void renderMessage(String message) {
-
+  public boolean removeImage(String name) {
+    return false;
   }
 
   @Override
@@ -53,13 +52,22 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
   }
 
   @Override
-  public void renderInput(List<String> questions) {
+  public String[] renderInput(List<String> questions, String error) {
+    return new String[0];
+  }
+
+  @Override
+  public String loadFile(FileNameExtensionFilter filter) {
+    return null;
+  }
+
+  @Override
+  public void saveFile(FileNameExtensionFilter filter) {
 
   }
 
   @Override
-  public String pickFile(String prompt, String fileTypes) {
-    return "";
-  }
+  public void renderMessage(String message) throws IllegalStateException {
 
+  }
 }
