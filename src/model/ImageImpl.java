@@ -84,6 +84,49 @@ public class ImageImpl implements Image {
     }
     return ret;
   }
+
+
+  @Override
+  public int[][] makeHistogram() {
+    int[][] histogram = new int[256][4];
+
+
+    for (int k = 0; k < histogram.length; k++) {
+      int countRed = 0;
+      int countGreen = 0;
+      int countBlue = 0;
+      int countIntensity = 0;
+
+      for (Color[] pixel : this.pixels) {
+        for (int j = 0; j < this.pixels[0].length; j++) {
+          int red = pixel[j].getRed();
+          int green = pixel[j].getGreen();
+          int blue = pixel[j].getBlue();
+
+          double avg = (red + green + blue) / 3.0;
+          int intensity = Math.toIntExact(Math.round(avg));
+
+          if (k == red) {
+            countRed++;
+            histogram[k][0] = countRed;
+          }
+          if (k == green) {
+            countGreen++;
+            histogram[k][1] = countGreen;
+          }
+          if (k == blue) {
+            countBlue++;
+            histogram[k][2] = countBlue;
+          }
+          if (k == intensity) {
+            countIntensity++;
+            histogram[k][3] = countIntensity;
+          }
+        }
+      }
+    }
+    return histogram;
+  }
 }
 
 

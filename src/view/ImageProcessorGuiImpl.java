@@ -35,6 +35,10 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
 
   }
 
+  public String getCommand() {
+
+  }
+
   public void displayImage(String name, BufferedImage image) {
 
   }
