@@ -36,11 +36,4 @@ public interface Image {
    */
   Image copy();
 
-  /**
-   * Returns this image as a {@link BufferedImage}.
-   *
-   * @return this image as a BufferedImage object
-   */
-  BufferedImage getBufferedImage();
-
 }
