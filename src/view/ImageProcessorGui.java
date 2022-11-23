@@ -70,6 +70,13 @@ public interface ImageProcessorGui extends ImageProcessorView {
   void saveFile(FileNameExtensionFilter filter);
 
   /**
+   * Sets the available transformations the controller supports.
+   *
+   * @param transformations the list of transformations to display
+   */
+  void setTransformations(String[] transformations);
+
+  /**
    * Represents a type of dialog's styling that can be displayed to a user.
    */
   enum DialogType {

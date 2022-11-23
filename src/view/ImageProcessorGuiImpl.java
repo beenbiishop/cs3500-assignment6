@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
@@ -26,12 +25,9 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
 
   private final Map<String, int[][]> histograms = new HashMap<>();
   private final Map<String, BufferedImage> images = new HashMap<>();
-  private JFrame frame;
-  private JMenuBar menuBar;
+  private final JFrame frame;
   private PreviewPanel previewPanel;
-  private JPanel sidebarPanel;
   private TransformationPanel transformationPanel;
-  private JButton transformationButton;
   private HistogramPanel histogramPanel;
   private MessagePanel messagePanel;
 
@@ -48,6 +44,7 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
     this.frame.pack();
     this.frame.setVisible(true);
   }
+
 
   @Override
   public void displayImage(String name, BufferedImage image, int[][] histogram) {
@@ -88,8 +85,8 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
    * Initializes the menu bar.
    */
   private void initMenu() {
-    this.menuBar = new MenubarPanel();
-    this.frame.setJMenuBar(this.menuBar);
+    JMenuBar menuBar = new MenubarPanel();
+    this.frame.setJMenuBar(menuBar);
   }
 
   /**
@@ -104,15 +101,15 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
    * Initializes the sidebar with the transformation panel and the histogram panel.
    */
   private void initSidebar() {
-    this.sidebarPanel = new JPanel(new GridLayout(2, 0));
+    JPanel sidebarPanel = new JPanel(new GridLayout(2, 0));
     this.transformationPanel = new TransformationPanel();
     this.transformationPanel.setBorder(BorderFactory.createTitledBorder("Transformations"));
     this.histogramPanel = new HistogramPanel();
     this.histogramPanel.setBorder(BorderFactory.createTitledBorder("Histogram"));
-    this.sidebarPanel.add(this.transformationPanel);
-    this.sidebarPanel.add(this.histogramPanel);
-    this.sidebarPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 10));
-    this.frame.add(this.sidebarPanel, BorderLayout.EAST);
+    sidebarPanel.add(this.transformationPanel);
+    sidebarPanel.add(this.histogramPanel);
+    sidebarPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 10));
+    this.frame.add(sidebarPanel, BorderLayout.EAST);
   }
 
   /**
@@ -121,5 +118,11 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
   private void initMessagePanel() {
     this.messagePanel = new MessagePanel();
     this.frame.add(this.messagePanel, BorderLayout.SOUTH);
+  }
+
+  @Override
+  public void setTransformations(String[] transformations) {
+    this.transformationPanel.setTransformations(transformations);
+    this.frame.repaint();
   }
 }
