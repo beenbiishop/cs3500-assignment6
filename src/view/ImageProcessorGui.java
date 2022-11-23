@@ -66,7 +66,6 @@ public interface ImageProcessorGui extends ImageProcessorView {
    * Renders a popup prompting a user to choose a file.
    *
    * @param filter the file types allowed to be loaded
-   * @return a string with the file path of the selected file or null if dismissed
    */
   void saveFile(FileNameExtensionFilter filter);
 
