@@ -2,14 +2,13 @@ package controller;
 
 import view.ImageProcessorGui;
 
-public interface ImageProcessorGuiController extends ImageProcessorController {
+public interface ImageProcessorGuiController {
 
-  void loadImage(String input);
+  void loadImage();
 
   void removeImage(String input);
-  void saveImage(String input);
+  void saveImage();
 
   void transformImage(String command);
-
   void setView(ImageProcessorGui view);
 }
