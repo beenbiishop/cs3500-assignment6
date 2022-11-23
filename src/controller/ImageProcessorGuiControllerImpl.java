@@ -18,6 +18,10 @@ import model.StoredImages;
 import model.transformations.Visualize;
 import view.ImageProcessorGui;
 
+/**
+ * The class that implements the ImageProcessorGuiController.
+ * ImageProcessorGuiControllerImpl implements all the features detailed out in the interface.
+ */
 public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiController {
 
   private final StoredImages store;
