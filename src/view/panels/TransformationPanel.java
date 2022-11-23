@@ -1,5 +1,6 @@
 package view.panels;
 
+import controller.ImageProcessorGuiController;
 import java.awt.BorderLayout;
 import javax.swing.JButton;
 import javax.swing.JList;
@@ -12,16 +13,18 @@ import view.ImageProcessorGui;
  */
 public class TransformationPanel extends JPanel {
 
-  private JButton transformButton = new JButton("Apply Transformation");
-  private JList<String> list = new JList<String>();
+  private final JList<String> list = new JList<String>();
 
   /**
    * Constructs a new transformation panel.
    */
-  public TransformationPanel() {
+  public TransformationPanel(ImageProcessorGuiController controller) {
     super(new BorderLayout());
     this.add(new JScrollPane(this.list), BorderLayout.CENTER);
-    this.add(this.transformButton, BorderLayout.SOUTH);
+    JButton transformButton = new JButton("Apply Transformation");
+    this.add(transformButton, BorderLayout.SOUTH);
+    transformButton.addActionListener(
+        evt -> controller.transformImage(this.getSelectedTransformation()));
   }
 
   /**
@@ -41,6 +44,15 @@ public class TransformationPanel extends JPanel {
     this.list.setListData(transformations);
     this.list.repaint();
     this.repaint();
+  }
+
+  /**
+   * Returns the selected transformation.
+   *
+   * @return the selected transformation
+   */
+  private String getSelectedTransformation() {
+    return this.list.getSelectedValue();
   }
 
 }

@@ -70,4 +70,13 @@ public class PreviewPanel extends JTabbedPane {
     }
     this.setSelectedIndex(this.indexOfTab(title));
   }
+
+  /**
+   * Returns the title of the currently selected image tab.
+   *
+   * @return the name of the currently selected image tab
+   */
+  public String getSelectedImageTab() {
+    return this.getTitleAt(this.getSelectedIndex());
+  }
 }

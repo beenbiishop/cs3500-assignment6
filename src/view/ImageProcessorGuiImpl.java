@@ -125,4 +125,9 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
     this.transformationPanel.setTransformations(transformations);
     this.frame.repaint();
   }
+
+  @Override
+  public String getCurrentImageName() {
+    return this.previewPanel.getSelectedImageTab();
+  }
 }

@@ -77,6 +77,13 @@ public interface ImageProcessorGui extends ImageProcessorView {
   void setTransformations(String[] transformations);
 
   /**
+   * Gets the name of the image tab that is currently selected.
+   *
+   * @return the name of the image tab that is currently selected
+   */
+  String getCurrentImageName();
+
+  /**
    * Represents a type of dialog's styling that can be displayed to a user.
    */
   enum DialogType {
