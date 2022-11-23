@@ -1,6 +1,5 @@
 package view;
 
-import controller.ImageProcessorGuiController;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -10,13 +9,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  * interface.
  */
 public interface ImageProcessorGui extends ImageProcessorView {
-
-  /**
-   * Adds the action listeners from the controller to the view.
-   *
-   * @param features the controller with action listeners to add
-   */
-  void addFeatures(ImageProcessorGuiController features);
 
   /**
    * Displays a {@link BufferedImage} in the view identified by the given file name.

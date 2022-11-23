@@ -3,14 +3,17 @@ package view;
 import controller.ImageProcessorGuiController;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.List;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import view.panels.HistogramPanel;
@@ -26,7 +29,9 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
   private JFrame frame;
   private JMenuBar menuBar;
   private PreviewPanel previewPanel;
+  private JPanel sidebarPanel;
   private TransformationPanel transformationPanel;
+  private JButton transformationButton;
   private HistogramPanel histogramPanel;
   private MessagePanel messagePanel;
 
@@ -42,11 +47,6 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
     initMessagePanel();
     this.frame.pack();
     this.frame.setVisible(true);
-  }
-
-  @Override
-  public void addFeatures(ImageProcessorGuiController features) {
-
   }
 
   @Override
@@ -130,22 +130,11 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
    * Initializes the sidebar with the transformation panel and the histogram panel.
    */
   private void initSidebar() {
-    initTransformationPanel();
-    initHistogramPanel();
-  }
-
-  /**
-   * Initializes the transformation panel.
-   */
-  private void initTransformationPanel() {
-
-  }
-
-  /**
-   * Initializes the histogram panel.
-   */
-  private void initHistogramPanel() {
-
+    this.sidebarPanel = new JPanel(new GridLayout(2, 0));
+    this.transformationPanel = new TransformationPanel();
+    this.histogramPanel = new HistogramPanel();
+    this.sidebarPanel.add(this.transformationPanel);
+    this.sidebarPanel.add(this.histogramPanel);
   }
 
   /**
