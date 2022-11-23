@@ -1,22 +1,20 @@
 package view;
 
-import controller.ImageProcessorGuiController;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import view.panels.HistogramPanel;
+import view.panels.MenubarPanel;
 import view.panels.MessagePanel;
 import view.panels.PreviewPanel;
 import view.panels.TransformationPanel;
@@ -26,6 +24,8 @@ import view.panels.TransformationPanel;
  */
 public class ImageProcessorGuiImpl implements ImageProcessorGui {
 
+  private final Map<String, int[][]> histograms = new HashMap<>();
+  private final Map<String, BufferedImage> images = new HashMap<>();
   private JFrame frame;
   private JMenuBar menuBar;
   private PreviewPanel previewPanel;
@@ -51,17 +51,17 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
 
   @Override
   public void displayImage(String name, BufferedImage image, int[][] histogram) {
-
+    this.previewPanel.addImageTab(name, image);
+    this.histogramPanel.updateHistogram(histogram);
   }
 
   @Override
   public boolean removeImage(String name) {
-    return false;
+    return this.previewPanel.removeImageTab(name);
   }
 
   @Override
   public void renderDialog(DialogType type, String message) {
-
   }
 
   @Override
@@ -81,40 +81,14 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
 
   @Override
   public void renderMessage(String message) throws IllegalStateException {
-
+    this.messagePanel.updateMessage(message);
   }
 
   /**
    * Initializes the menu bar.
    */
   private void initMenu() {
-    this.menuBar = new JMenuBar();
-
-    // File Menu
-    JMenu fileMenu = new JMenu("File");
-    JMenuItem loadItem = new JMenuItem("Load");
-    loadItem.setMnemonic(KeyEvent.VK_L);
-    loadItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.META_DOWN_MASK));
-    fileMenu.add(loadItem);
-    JMenuItem saveItem = new JMenuItem("Save");
-    saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.META_DOWN_MASK));
-    fileMenu.add(saveItem);
-    JMenuItem removeItem = new JMenuItem("Remove");
-    removeItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.META_DOWN_MASK));
-    fileMenu.add(removeItem);
-    JMenuItem quitItem = new JMenuItem("Quit");
-    quitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.META_DOWN_MASK));
-    fileMenu.add(quitItem);
-
-    // Help Menu
-    JMenu helpMenu = new JMenu("Help");
-    JMenuItem helpItem = new JMenuItem("How to Use");
-    helpMenu.add(helpItem);
-    JMenuItem aboutItem = new JMenuItem("About Image Processor");
-    helpMenu.add(aboutItem);
-
-    this.menuBar.add(fileMenu);
-    this.menuBar.add(helpMenu);
+    this.menuBar = new MenubarPanel();
     this.frame.setJMenuBar(this.menuBar);
   }
 
@@ -132,9 +106,13 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
   private void initSidebar() {
     this.sidebarPanel = new JPanel(new GridLayout(2, 0));
     this.transformationPanel = new TransformationPanel();
+    this.transformationPanel.setBorder(BorderFactory.createTitledBorder("Transformations"));
     this.histogramPanel = new HistogramPanel();
+    this.histogramPanel.setBorder(BorderFactory.createTitledBorder("Histogram"));
     this.sidebarPanel.add(this.transformationPanel);
     this.sidebarPanel.add(this.histogramPanel);
+    this.sidebarPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 10));
+    this.frame.add(this.sidebarPanel, BorderLayout.EAST);
   }
 
   /**

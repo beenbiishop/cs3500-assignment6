@@ -47,11 +47,16 @@ public class PreviewPanel extends JTabbedPane {
    *
    * @param title the title of the tab to remove
    */
-  public void removeImageTab(String title) {
+  public boolean removeImageTab(String title) {
     if (title == null || title.length() == 0) {
       throw new IllegalArgumentException("Title cannot be null or empty");
     }
-    this.removeTabAt(this.indexOfTab(title));
+    int index = this.indexOfTab(title);
+    if (index == -1) {
+      return false;
+    }
+    this.removeTabAt(index);
+    return true;
   }
 
   /**
