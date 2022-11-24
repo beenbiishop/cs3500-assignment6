@@ -10,31 +10,49 @@ import javax.swing.KeyStroke;
 
 public class MenubarPanel extends JMenuBar {
 
-  public MenubarPanel(ImageProcessorGuiController controller) {
+  private final JMenuItem loadItem;
+  private final JMenuItem saveItem;
+  private final JMenuItem removeItem;
+  private final JMenuItem quitItem;
+  private ImageProcessorGuiController controller;
+
+  public MenubarPanel() {
     super();
 
     // File Menu
     JMenu fileMenu = new JMenu("File");
-    JMenuItem loadItem = new JMenuItem("Load");
+    this.loadItem = new JMenuItem("Load");
     loadItem.setMnemonic(KeyEvent.VK_L);
     loadItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.META_DOWN_MASK));
-    loadItem.addActionListener(evt -> controller.loadImage());
     fileMenu.add(loadItem);
-    JMenuItem saveItem = new JMenuItem("Save");
+    this.saveItem = new JMenuItem("Save");
     saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.META_DOWN_MASK));
-    saveItem.addActionListener(evt -> controller.saveImage());
     fileMenu.add(saveItem);
-    JMenuItem removeItem = new JMenuItem("Remove");
+    this.removeItem = new JMenuItem("Remove");
     removeItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.META_DOWN_MASK));
-    removeItem.addActionListener(evt -> controller.removeImage());
     fileMenu.add(removeItem);
-    JMenuItem quitItem = new JMenuItem("Quit");
+    this.quitItem = new JMenuItem("Quit");
     quitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.META_DOWN_MASK));
-//    quitItem.addActionListener(evt -> controller.quit());
     fileMenu.add(quitItem);
 
     // Add to menu bar
     this.add(fileMenu);
+  }
+
+  /**
+   * Sets the controller for this panel.
+   *
+   * @param controller the controller for this panel
+   */
+  public void addFeatures(ImageProcessorGuiController controller) {
+    if (controller == null) {
+      throw new IllegalArgumentException("Controller cannot be null");
+    }
+    this.controller = controller;
+    loadItem.addActionListener(evt -> controller.loadImage());
+    saveItem.addActionListener(evt -> controller.saveImage());
+    removeItem.addActionListener(evt -> controller.removeImage());
+    quitItem.addActionListener(evt -> controller.quit());
   }
 
 }

@@ -14,17 +14,30 @@ import view.ImageProcessorGui;
 public class TransformationPanel extends JPanel {
 
   private final JList<String> list = new JList<String>();
+  private final JButton applyButton = new JButton("Apply Transformation");
+  private ImageProcessorGuiController controller;
 
   /**
    * Constructs a new transformation panel.
    */
-  public TransformationPanel(ImageProcessorGuiController controller) {
+  public TransformationPanel() {
     super(new BorderLayout());
     this.add(new JScrollPane(this.list), BorderLayout.CENTER);
-    JButton transformButton = new JButton("Apply Transformation");
-    this.add(transformButton, BorderLayout.SOUTH);
-    transformButton.addActionListener(evt -> controller.transformImage());
-    // this.getSelectedTransformation();
+    this.add(this.applyButton, BorderLayout.SOUTH);
+  }
+
+  /**
+   * Sets the controller for this panel.
+   *
+   * @param controller the controller for this panel
+   */
+  public void addFeatures(ImageProcessorGuiController controller) {
+    if (controller == null) {
+      throw new IllegalArgumentException("Controller cannot be null");
+    }
+    this.controller = controller;
+    this.applyButton.addActionListener(
+        evt -> this.controller.transformImage(this.getSelectedTransformation()));
   }
 
   /**
