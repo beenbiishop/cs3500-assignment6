@@ -1,6 +1,5 @@
 package view;
 
-import controller.ImageProcessorGuiController;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -9,8 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import view.panels.HistogramPanel;
 import view.panels.MenubarPanel;
@@ -26,18 +29,13 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
   private final Map<String, int[][]> histograms = new HashMap<>();
   private final Map<String, BufferedImage> images = new HashMap<>();
   private final JFrame frame;
-  private final ImageProcessorGuiController controller;
+  private final MenubarPanel menubarPanel = new MenubarPanel();
   private final PreviewPanel previewPanel;
   private final TransformationPanel transformationPanel;
   private final HistogramPanel histogramPanel = new HistogramPanel();
   private final MessagePanel messagePanel = new MessagePanel();
 
-  public ImageProcessorGuiImpl(ImageProcessorGuiController controller) {
-    if (controller == null) {
-      throw new IllegalArgumentException("Controller cannot be null");
-    }
-    this.controller = controller;
-
+  public ImageProcessorGuiImpl() {
     // Initialize the frame
     this.frame = new JFrame("Image Processor");
     this.frame.setLayout(new BorderLayout(5, 5));
@@ -46,12 +44,12 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
     this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     // Add panels to the frame
-    this.frame.setJMenuBar(new MenubarPanel(this.controller));
+    this.frame.setJMenuBar(this.menubarPanel);
     this.previewPanel = new PreviewPanel();
     this.previewPanel.addChangeListener(evt -> this.changeHistogram());
     this.frame.add(this.previewPanel, BorderLayout.CENTER);
     this.frame.add(this.messagePanel, BorderLayout.SOUTH);
-    this.transformationPanel = new TransformationPanel(this.controller);
+    this.transformationPanel = new TransformationPanel();
     initSidebar();
 
     // Display the frame
@@ -93,17 +91,67 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
 
   @Override
   public String[] renderInput(List<String> questions, String error) {
-    return new String[0];
+    if (questions == null) {
+      throw new IllegalArgumentException("Questions cannot be null");
+    }
+    if (error == null) {
+      error = "";
+    }
+    Map<String, JTextField> fields = new HashMap<>();
+    for (String question : questions) {
+      fields.put(question, new JTextField());
+    }
+    JPanel panel = new JPanel(new GridLayout(questions.size() * 2, 0));
+    for (String question : questions) {
+      panel.add(new JLabel(question));
+      panel.add(fields.get(question));
+    }
+    panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    int result = JOptionPane.showConfirmDialog(null, panel, error, JOptionPane.OK_CANCEL_OPTION);
+    if (result == JOptionPane.OK_OPTION) {
+      String[] answers = new String[questions.size()];
+      int answerIndex = 0;
+      for (String question : questions) {
+        if (fields.get(question).getText().isEmpty()) {
+          answers[answerIndex] = "";
+        } else {
+          answers[answerIndex] = fields.get(question).getText();
+        }
+      }
+      return answers;
+    } else {
+      return null;
+    }
   }
 
   @Override
   public String loadFile(FileNameExtensionFilter filter) {
-    return null;
+    if (filter == null) {
+      throw new IllegalArgumentException("Filter cannot be null");
+    }
+    JFileChooser chooser = new JFileChooser();
+    chooser.setFileFilter(filter);
+    int result = chooser.showOpenDialog(this.frame);
+    if (result == JFileChooser.APPROVE_OPTION) {
+      return chooser.getSelectedFile().getAbsolutePath();
+    } else {
+      return null;
+    }
   }
 
   @Override
-  public void saveFile(FileNameExtensionFilter filter) {
-
+  public String saveFile(FileNameExtensionFilter filter) {
+    if (filter == null) {
+      throw new IllegalArgumentException("Filter cannot be null");
+    }
+    JFileChooser chooser = new JFileChooser();
+    chooser.setFileFilter(filter);
+    int result = chooser.showSaveDialog(this.frame);
+    if (result == JFileChooser.APPROVE_OPTION) {
+      return chooser.getSelectedFile().getAbsolutePath();
+    } else {
+      return null;
+    }
   }
 
   @Override
@@ -141,5 +189,15 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
   @Override
   public String getCurrentImageName() {
     return this.previewPanel.getSelectedImageTab();
+  }
+
+  @Override
+  public MenubarPanel getMenubarPanel() {
+    return this.menubarPanel;
+  }
+
+  @Override
+  public TransformationPanel getTransformationPanel() {
+    return this.transformationPanel;
   }
 }

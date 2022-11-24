@@ -3,6 +3,8 @@ package view;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import view.panels.MenubarPanel;
+import view.panels.TransformationPanel;
 
 /**
  * This interface represents a view of the Image Processor that implements the graphical user
@@ -66,8 +68,9 @@ public interface ImageProcessorGui extends ImageProcessorView {
    * Renders a popup prompting a user to choose a file.
    *
    * @param filter the file types allowed to be loaded
+   * @return the file path of the selected file save location or null if dismissed
    */
-  void saveFile(FileNameExtensionFilter filter);
+  String saveFile(FileNameExtensionFilter filter);
 
   /**
    * Sets the available transformations the controller supports.
@@ -82,6 +85,20 @@ public interface ImageProcessorGui extends ImageProcessorView {
    * @return the name of the image tab that is currently selected
    */
   String getCurrentImageName();
+
+  /**
+   * Gets the menu bar panel of this GUI view.
+   *
+   * @return the menu bar panel of this GUI view
+   */
+  MenubarPanel getMenubarPanel();
+
+  /**
+   * Gets the transformation panel of this GUI view.
+   *
+   * @return the transformation panel of this GUI view
+   */
+  TransformationPanel getTransformationPanel();
 
   /**
    * Represents a type of dialog's styling that can be displayed to a user.

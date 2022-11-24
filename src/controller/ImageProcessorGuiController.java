@@ -24,5 +24,5 @@ public interface ImageProcessorGuiController extends ImageProcessorController {
   /**
    * Action listener to handle the transformation of an image in the program.
    */
-  void transformImage();
+  void transformImage(String transformation);
 }
