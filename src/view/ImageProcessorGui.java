@@ -101,6 +101,11 @@ public interface ImageProcessorGui extends ImageProcessorView {
   TransformationPanel getTransformationPanel();
 
   /**
+   * Closes the GUI and all panels.
+   */
+  void close();
+
+  /**
    * Represents a type of dialog's styling that can be displayed to a user.
    */
   enum DialogType {

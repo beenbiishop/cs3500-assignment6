@@ -217,4 +217,9 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
   public TransformationPanel getTransformationPanel() {
     return this.transformationPanel;
   }
+
+  @Override
+  public void close() {
+    this.frame.dispose();
+  }
 }
