@@ -36,6 +36,32 @@ Instructions on how to use the program can be found in the [USEME.md](USEME.md) 
 
 ## Changelog
 
+### Assignment 6 (11/22/2022)
+
+_Third version. Retained all existing functionality, and added a new view, allowing the user to view
+the program graphically rather than through text.
+
+#### Changes
+
+* Added `ImageUtils` class in order to add the support of making a histogram based on the pixels of
+  the current image. The histogram includes data that correspond to the R, G, B , and intensity
+  values of a pixel.
+* Added support for a GUI, through the interface `ImageProcessorGui` to allow the user to view the
+  program in a graphical interface instead of a text based one.
+    * Added an implementation of the aforementioned interface: `ImageProcessorGuiImpl` : Implements
+      the ImageProcessorGui interface and it's methods. Renders the view graphically and changes it
+      according to the user's interactions.
+* Added support for the GUI's controller, through the interface `ImageProcessorGuiController` to
+  make features of the program that the user can apply.
+    * Added an implementation of the aforementioned interface: `ImageProcessorGuiControllerImpl` :
+      Controls what the viewer views, by adding methods that carry out the action listeners.
+* Added `ImageUtils` class in order to add the support of making a histogram based on the pixels of
+  the current image. The histogram includes data that correspond to the R, G, B , and intensity
+  values of a pixel.
+* Added support for `Panels`: to represent the different panels that will be available to the user.
+    * Added classes that extend the JMenuBar abstract class, `HistogramPanel`, `MenubarPanel`
+      , `MessagePanel`, `PreviewPanel`, and `TransformationPanel`.
+
 ### Assignment 5 (11/10/2022)
 
 _Second version. Retained all existing functionality, and added support for new transformations and
@@ -151,6 +177,13 @@ To more easily visualize these classes, we have provided a class diagram below:
               image files into `Image` objects, and vice versa.
             * `ImageIOHandler` : Implements the `ImageFileHandler` interface for converting images
               into `Image` objects using the Java ImageIO library.
+    * `ImageProcessorGuiController` : Represents a features interface for the image processor. As
+      the user interacts with the program and clicks on features, the controller validates the
+      parameters and executes them. It also handles the exceptions thrown by the model.
+        * Implementations:
+            * `ImageProcessorGuiControllerImpl`: Implements the `ImageProcessorGuiController`
+              interface supporting features such as `loadImage`, `removeImage`, `saveImage`, `quit`,
+              and `transformImage`.
 
 ### Model
 
@@ -194,6 +227,24 @@ To more easily visualize these classes, we have provided a class diagram below:
         * Implementations:
             * `ImageProcessorViewImpl` : Implements the ImageProcessorView interface and it's
               methods. Handles appending all the messages from the controller to the user.
+
+    * `ImageProcessorGui` : This graphical user interface represents the view of the Image
+      Processor. It contains methods that the controller can call to render the view.
+        * Implementations:
+            * `ImageProcessorGuiImpl` : Implements the ImageProcessorGui interface and it's methods.
+              Renders the view graphically and changes it according to the user's interactions.
+
+* Panels
+    * `HistogramPanel` : Represents the histogram panel that is a part of the view, displays the
+      given Image's histogram of R, G, B, and Intensity values.
+    * `MenubarPanel` : Represents the Menubar panel that is a part of the view, displays the
+      program's different menu bar options such as (Load, save, quit, remove, transform).
+    * `MessagePanel` : Represents the message panel that is a part of the view, displays the message
+      from the controller to the viewer.
+    * `PreviewPanel` : Represents the preview panel that is a part of the view, displays the given
+      Image as a preview.
+    * `TransformationPanel` : Represents the transformations panel that is a part of the view,
+      displays all the transformations that can be applied.
 
 ### Main Class
 

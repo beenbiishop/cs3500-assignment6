@@ -61,3 +61,16 @@ be added for readability, but will not affect the program's execution.
 7. The program will execute the commands in the script file, and display the success/failure of each
    command in the terminal window as if you were entering the commands manually.
 
+## Graphical User Interface
+
+1. When the program loads, navigate to the File menu item on the left side of the program. Here
+   select `Load` and select an image file when the FileChooser pops up.
+2. Now navigate to the right side of the program and select from the list of transitions which
+   transformation you would like to apply onto your current image.
+3. You may apply any number of transformations or choose to not apply any at all before
+   saving/loading.
+4. To save the image, navigate once more to the File menu item at the top left of the program. Here
+   select `Save`.
+5. To remove the current image on the screen, repeat the previous step but click `Remove` instead of
+   load.
+6. To quit the program all together, repeat the previous step but click `quit`.

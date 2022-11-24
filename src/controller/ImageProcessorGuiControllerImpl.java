@@ -98,11 +98,12 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
     }
     String newFileName = answers[0];
 
-    FileNameExtensionFilter filter = new FileNameExtensionFilter(null, fileFormat);
-    String path = this.view.loadFile(filter);
-
-    ImageProcessorCmd command = new LoadCmd(this.view, this.store, path, newFileName);
-    command.execute();
+    try {
+      ImageProcessorCmd command = new LoadCmd(this.view, this.store, file, newFileName);
+      command.execute();
+    } catch (IllegalArgumentException e) {
+      this.view.renderDialog(DialogType.Danger, e.getMessage());
+    }
 
     Image image = this.store.retrieve(newFileName);
     BufferedImage buffered = ImageUtils.getBufferedImage(image);
@@ -119,11 +120,12 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
 
   @Override
   public void saveImage() {
-    List<String> questions = new ArrayList<>();
-    questions.add("Please select a file format.");
-
-    this.answers = this.view.renderInput(questions, null);
-    String fileFormat = answers[0];
+    String file = this.view.saveFile(
+        new FileNameExtensionFilter("Image Files", "jpg", "jpeg", "png", "bmp"));
+    if (file == null) {
+      this.view.renderMessage("Save cancelled.");
+      return;
+    }
 
     String name = this.view.getCurrentImageName();
     if (name == null) {
@@ -131,29 +133,12 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
       return;
     }
 
-    //not sure how to use the filenameextensionfilter just yet,,
-    FileNameExtensionFilter filter = new FileNameExtensionFilter(null, fileFormat);
-    String path = this.view.saveFile(filter);
-
-    ImageProcessorCmd command = new SaveCmd(this.view, this.store, path, name);
-    command.execute();
-  }
-
-  private void questions() {
-    this.questions = new ArrayList<>();
-    questions.add("Give this file a new name:");
-  }
-
-  private void answers() {
-    this.answers = this.view.renderInput(questions, null);
-    this.newFileName = answers[0];
-  }
-
-  private void storedImage() {
-    Image image = this.store.retrieve(newFileName);
-    BufferedImage buffered = (BufferedImage) image;
-    int[][] histogram = image.makeHistogram();
-    this.view.displayImage(newFileName, buffered, histogram);
+    try {
+      ImageProcessorCmd command = new SaveCmd(this.fakeView, this.store, file, name);
+      command.execute();
+    } catch (IllegalArgumentException e) {
+      this.view.renderDialog(DialogType.Danger, e.getMessage());
+    }
   }
 
   @Override
