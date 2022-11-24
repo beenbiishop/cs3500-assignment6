@@ -1,7 +1,6 @@
 package model;
 
 import java.awt.Color;
-import java.awt.image.BufferedImage;
 
 /**
  * Represents an image and it's pixels.
@@ -35,13 +34,6 @@ public interface Image {
    * @return a copy of this image
    */
   Image copy();
-
-  /**
-   * Returns a histogram of RGB values and Intensity values of this image object.
-   *
-   * @return a 2D array of integers for this image.
-   */
-  int[][] makeHistogram();
 
 
 }

@@ -2,6 +2,7 @@ package controller;
 
 import controller.commands.BrightnessCmd;
 import controller.commands.FilterCmd;
+import controller.commands.FilterCmd.FilterType;
 import controller.commands.HorizontalFlipCmd;
 import controller.commands.LoadCmd;
 import controller.commands.SaveCmd;
@@ -12,9 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import model.Image;
+import model.ImageUtils;
 import model.StoredImages;
-import model.transformations.Visualize;
+import model.transformations.Visualize.Channel;
 import view.ImageProcessorGui;
+import view.ImageProcessorGui.DialogType;
+import view.ImageProcessorView;
+import view.ImageProcessorViewImpl;
 import view.panels.MenubarPanel;
 
 /**
@@ -24,13 +29,8 @@ import view.panels.MenubarPanel;
 public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiController {
 
   private final StoredImages store;
+  private final ImageProcessorView fakeView;
   private ImageProcessorGui view;
-
-  private String newFileName;
-  private String name;
-
-  private List<String> questions;
-  private String[] answers;
 
   /**
    * Constructs a new controller for the GUI.
@@ -42,6 +42,23 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
       throw new IllegalArgumentException("Store cannot be null.");
     }
     this.store = store;
+    this.fakeView = new ImageProcessorViewImpl(new StringBuilder());
+    String[] transformations = new String[14];
+    transformations[0] = "Blur";
+    transformations[1] = "Brighten";
+    transformations[2] = "Darken";
+    transformations[3] = "Greyscale";
+    transformations[4] = "Horizontal Flip";
+    transformations[5] = "Vertical Flip";
+    transformations[6] = "Sepia";
+    transformations[7] = "Sharpen";
+    transformations[8] = "Visualize Red";
+    transformations[9] = "Visualize Green";
+    transformations[10] = "Visualize Blue";
+    transformations[11] = "Visualize Value";
+    transformations[12] = "Visualize Intensity";
+    transformations[13] = "Visualize Luma";
+    this.view.setTransformations(transformations);
   }
 
   @Override
@@ -59,13 +76,27 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
 
   @Override
   public void loadImage() {
-    List<String> questions = new ArrayList<>();
-    questions.add("Please select a file format.");
-    questions.add("Give this file a new name:");
+    String file = this.view.loadFile(
+        new FileNameExtensionFilter("Image Files", "jpg", "jpeg", "png", "bmp"));
+    if (file == null) {
+      this.view.renderMessage("Load cancelled.");
+      return;
+    }
 
-    this.answers = this.view.renderInput(questions, null);
-    String fileFormat = answers[0];
-    String newFileName = answers[1];
+    List<String> questions = new ArrayList<>();
+    questions.add("Choose a name to load this image as: ");
+
+    String[] answers = this.view.renderInput(questions, null);
+    if (answers == null) {
+      this.view.renderMessage("Load cancelled.");
+      return;
+    }
+
+    if (answers[0].equals("")) {
+      this.view.renderDialog(DialogType.Danger, "Image name cannot be empty.");
+      return;
+    }
+    String newFileName = answers[0];
 
     FileNameExtensionFilter filter = new FileNameExtensionFilter(null, fileFormat);
     String path = this.view.loadFile(filter);
@@ -74,9 +105,8 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
     command.execute();
 
     Image image = this.store.retrieve(newFileName);
-    BufferedImage buffered = (BufferedImage) image;
-    int[][] histogram = image.makeHistogram();
-
+    BufferedImage buffered = ImageUtils.getBufferedImage(image);
+    int[][] histogram = ImageUtils.getChannelFrequencies(image);
     this.view.displayImage(newFileName, buffered, histogram);
   }
 
@@ -96,6 +126,10 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
     String fileFormat = answers[0];
 
     String name = this.view.getCurrentImageName();
+    if (name == null) {
+      this.view.renderDialog(DialogType.Danger, "No image selected.");
+      return;
+    }
 
     //not sure how to use the filenameextensionfilter just yet,,
     FileNameExtensionFilter filter = new FileNameExtensionFilter(null, fileFormat);
@@ -124,128 +158,297 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
 
   @Override
   public void transformImage(String command) {
-
+    String name = this.view.getCurrentImageName();
+    List<String> questions = new ArrayList<>();
+    questions.add("Choose a name to save this image as: ");
+    String[] answers = null;
+    String newFileName = null;
     switch (command) {
       case "Blur":
-        this.questions();
-        this.answers();
-        this.name = this.view.getCurrentImageName();
-        ImageProcessorCmd blur = new FilterCmd(this.view, this.store, FilterCmd.FilterType.Blur,
-            this.name, newFileName);
-        blur.execute();
-        this.storedImage();
+        answers = this.view.renderInput(questions, null);
+        if (answers == null) {
+          this.view.renderMessage("Blur cancelled.");
+          return;
+        } else if (answers[0].length() == 0) {
+          this.view.renderDialog(DialogType.Danger, "Image name cannot be empty.");
+          return;
+        } else {
+          newFileName = answers[0];
+          try {
+            ImageProcessorCmd blur = new FilterCmd(this.fakeView, this.store, FilterType.Blur, name,
+                newFileName);
+            blur.execute();
+          } catch (IllegalArgumentException e) {
+            this.view.renderDialog(DialogType.Danger, e.getMessage());
+          }
+        }
         break;
-      case "Brightness":
-        this.questions();
-        this.questions.add("How much do you want to brighten by?");
-        this.answers();
-        this.name = this.view.getCurrentImageName();
-        int value = Integer.parseInt(this.answers[2]);
-        ImageProcessorCmd brighten = new BrightnessCmd(this.view, this.store, value, name,
-            newFileName);
-        brighten.execute();
-        this.storedImage();
+      case "Brighten":
+        questions.add("Enter the amount to brighten the image by: ");
+        answers = this.view.renderInput(questions, null);
+        String brightnessVal = null;
+        if (answers == null) {
+          this.view.renderMessage("Brighten cancelled.");
+          return;
+        } else if (answers[0].length() == 0) {
+          this.view.renderDialog(DialogType.Danger, "Image name cannot be empty.");
+          return;
+        } else if (answers[1].length() == 0) {
+          this.view.renderDialog(DialogType.Danger, "Must provide brightness value.");
+          return;
+        } else {
+          newFileName = answers[0];
+          brightnessVal = answers[1];
+          try {
+            ImageProcessorCmd brightness = new BrightnessCmd(this.fakeView, this.store,
+                Integer.parseInt(brightnessVal), name, newFileName);
+            brightness.execute();
+          } catch (IllegalArgumentException e) {
+            this.view.renderDialog(DialogType.Danger, e.getMessage());
+          }
+        }
+        break;
+      case "Darken":
+        questions.add("Enter the amount to darken the image by: ");
+        answers = this.view.renderInput(questions, null);
+        String darknessVal = null;
+        if (answers == null) {
+          this.view.renderMessage("Darken cancelled.");
+          return;
+        } else if (answers[0].length() == 0) {
+          this.view.renderDialog(DialogType.Danger, "Image name cannot be empty.");
+          return;
+        } else if (answers[1].length() == 0) {
+          this.view.renderDialog(DialogType.Danger, "Must provide darkness value.");
+          return;
+        } else {
+          newFileName = answers[0];
+          brightnessVal = answers[1];
+          try {
+            ImageProcessorCmd brightness = new BrightnessCmd(this.fakeView, this.store,
+                Integer.parseInt(brightnessVal) * -1, name, newFileName);
+            brightness.execute();
+          } catch (IllegalArgumentException e) {
+            this.view.renderDialog(DialogType.Danger, e.getMessage());
+          }
+        }
         break;
       case "Greyscale":
-        this.questions();
-        this.answers();
-        this.name = this.view.getCurrentImageName();
-        ImageProcessorCmd greyscale = new FilterCmd(this.view, this.store,
-            FilterCmd.FilterType.Greyscale, name, newFileName);
-        greyscale.execute();
-        this.storedImage();
+        answers = this.view.renderInput(questions, null);
+        if (answers == null) {
+          this.view.renderMessage("Greyscale cancelled.");
+          return;
+        } else if (answers[0].length() == 0) {
+          this.view.renderDialog(DialogType.Danger, "Image name cannot be empty.");
+          return;
+        } else {
+          newFileName = answers[0];
+          try {
+            ImageProcessorCmd greyscale = new FilterCmd(this.fakeView, this.store,
+                FilterType.Greyscale, name, newFileName);
+            greyscale.execute();
+          } catch (IllegalArgumentException e) {
+            this.view.renderDialog(DialogType.Danger, e.getMessage());
+          }
+        }
         break;
-      case "HorizontalFlip":
-        this.questions();
-        this.answers();
-        this.name = this.view.getCurrentImageName();
-        ImageProcessorCmd horFlip = new HorizontalFlipCmd(this.view, this.store, name, newFileName);
-        horFlip.execute();
-        this.storedImage();
+      case "Horizontal Flip":
+        answers = this.view.renderInput(questions, null);
+        if (answers == null) {
+          this.view.renderMessage("Horizontal flip cancelled.");
+          return;
+        } else if (answers[0].length() == 0) {
+          this.view.renderDialog(DialogType.Danger, "Image name cannot be empty.");
+          return;
+        } else {
+          newFileName = answers[0];
+          try {
+            ImageProcessorCmd flip = new HorizontalFlipCmd(this.fakeView, this.store, name,
+                newFileName);
+            flip.execute();
+          } catch (IllegalArgumentException e) {
+            this.view.renderDialog(DialogType.Danger, e.getMessage());
+          }
+        }
         break;
-      case "VerticalFlip":
-        this.questions();
-        this.answers();
-        this.name = this.view.getCurrentImageName();
-        ImageProcessorCmd verFlip = new VerticalFlipCmd(this.view, this.store, name, newFileName);
-        verFlip.execute();
-        this.storedImage();
+      case "Vertical Flip":
+        answers = this.view.renderInput(questions, null);
+        if (answers == null) {
+          this.view.renderMessage("Vertical flip cancelled.");
+          return;
+        } else if (answers[0].length() == 0) {
+          this.view.renderDialog(DialogType.Danger, "Image name cannot be empty.");
+          return;
+        } else {
+          newFileName = answers[0];
+          try {
+            ImageProcessorCmd flip = new VerticalFlipCmd(this.fakeView, this.store, name,
+                newFileName);
+            flip.execute();
+          } catch (IllegalArgumentException e) {
+            this.view.renderDialog(DialogType.Danger, e.getMessage());
+          }
+        }
         break;
       case "Sepia":
-        this.questions();
-        this.answers();
-        this.name = this.view.getCurrentImageName();
-        ImageProcessorCmd sepia = new FilterCmd(this.view, this.store, FilterCmd.FilterType.Sepia,
-            name, newFileName);
-        sepia.execute();
-        this.storedImage();
+        answers = this.view.renderInput(questions, null);
+        if (answers == null) {
+          this.view.renderMessage("Sepia cancelled.");
+          return;
+        } else if (answers[0].length() == 0) {
+          this.view.renderDialog(DialogType.Danger, "Image name cannot be empty.");
+          return;
+        } else {
+          newFileName = answers[0];
+          try {
+            ImageProcessorCmd sepia = new FilterCmd(this.fakeView, this.store, FilterType.Sepia,
+                name, newFileName);
+            sepia.execute();
+          } catch (IllegalArgumentException e) {
+            this.view.renderDialog(DialogType.Danger, e.getMessage());
+          }
+        }
         break;
       case "Sharpen":
-        this.questions();
-        this.answers();
-        this.name = this.view.getCurrentImageName();
-        ImageProcessorCmd sharpen = new FilterCmd(this.view, this.store,
-            FilterCmd.FilterType.Sharpen, name, newFileName);
-        sharpen.execute();
-        this.storedImage();
+        answers = this.view.renderInput(questions, null);
+        if (answers == null) {
+          this.view.renderMessage("Sharpen cancelled.");
+          return;
+        } else if (answers[0].length() == 0) {
+          this.view.renderDialog(DialogType.Danger, "Image name cannot be empty.");
+          return;
+        } else {
+          newFileName = answers[0];
+          try {
+            ImageProcessorCmd sharpen = new FilterCmd(this.fakeView, this.store, FilterType.Sharpen,
+                name, newFileName);
+            sharpen.execute();
+          } catch (IllegalArgumentException e) {
+            this.view.renderDialog(DialogType.Danger, e.getMessage());
+          }
+        }
         break;
-      case "Visualize-Red":
-        this.questions();
-        this.answers();
-        this.name = this.view.getCurrentImageName();
-        ImageProcessorCmd visualizeR = new VisualizeCmd(this.view, this.store,
-            Visualize.Channel.Red, name, newFileName);
-        visualizeR.execute();
-        this.storedImage();
+      case "Visualize Red":
+        answers = this.view.renderInput(questions, null);
+        if (answers == null) {
+          this.view.renderMessage("Visualize red cancelled.");
+          return;
+        } else if (answers[0].length() == 0) {
+          this.view.renderDialog(DialogType.Danger, "Image name cannot be empty.");
+          return;
+        } else {
+          newFileName = answers[0];
+          try {
+            ImageProcessorCmd visualize = new VisualizeCmd(this.fakeView, this.store, Channel.Red,
+                name, newFileName);
+            visualize.execute();
+          } catch (IllegalArgumentException e) {
+            this.view.renderDialog(DialogType.Danger, e.getMessage());
+          }
+        }
         break;
-      case "Visualize-Green":
-        this.questions();
-        this.answers();
-        this.name = this.view.getCurrentImageName();
-        ImageProcessorCmd visualizeG = new VisualizeCmd(this.view, this.store,
-            Visualize.Channel.Green, name, newFileName);
-        visualizeG.execute();
-        this.storedImage();
+      case "Visualize Green":
+        answers = this.view.renderInput(questions, null);
+        if (answers == null) {
+          this.view.renderMessage("Visualize green cancelled.");
+          return;
+        } else if (answers[0].length() == 0) {
+          this.view.renderDialog(DialogType.Danger, "Image name cannot be empty.");
+          return;
+        } else {
+          newFileName = answers[0];
+          try {
+            ImageProcessorCmd visualize = new VisualizeCmd(this.fakeView, this.store, Channel.Green,
+                name, newFileName);
+            visualize.execute();
+          } catch (IllegalArgumentException e) {
+            this.view.renderDialog(DialogType.Danger, e.getMessage());
+          }
+        }
         break;
-      case "Visualize-Blue":
-        this.questions();
-        this.answers();
-        this.name = this.view.getCurrentImageName();
-        ImageProcessorCmd visualizeB = new VisualizeCmd(this.view, this.store,
-            Visualize.Channel.Blue, name, newFileName);
-        visualizeB.execute();
-        this.storedImage();
+      case "Visualize Blue":
+        answers = this.view.renderInput(questions, null);
+        if (answers == null) {
+          this.view.renderMessage("Visualize blue cancelled.");
+          return;
+        } else if (answers[0].length() == 0) {
+          this.view.renderDialog(DialogType.Danger, "Image name cannot be empty.");
+          return;
+        } else {
+          newFileName = answers[0];
+          try {
+            ImageProcessorCmd visualize = new VisualizeCmd(this.fakeView, this.store, Channel.Blue,
+                name, newFileName);
+            visualize.execute();
+          } catch (IllegalArgumentException e) {
+            this.view.renderDialog(DialogType.Danger, e.getMessage());
+          }
+        }
         break;
-      case "Visualize-Luma":
-        this.questions();
-        this.answers();
-        this.name = this.view.getCurrentImageName();
-        ImageProcessorCmd visualizeL = new VisualizeCmd(this.view, this.store,
-            Visualize.Channel.Luma, name, newFileName);
-        visualizeL.execute();
-        this.storedImage();
+      case "Visualize Luma":
+        answers = this.view.renderInput(questions, null);
+        if (answers == null) {
+          this.view.renderMessage("Visualize luma cancelled.");
+          return;
+        } else if (answers[0].length() == 0) {
+          this.view.renderDialog(DialogType.Danger, "Image name cannot be empty.");
+          return;
+        } else {
+          newFileName = answers[0];
+          try {
+            ImageProcessorCmd visualize = new VisualizeCmd(this.fakeView, this.store, Channel.Luma,
+                name, newFileName);
+            visualize.execute();
+          } catch (IllegalArgumentException e) {
+            this.view.renderDialog(DialogType.Danger, e.getMessage());
+          }
+        }
         break;
-      case "Visualize-Value":
-        this.questions();
-        this.answers();
-        this.name = this.view.getCurrentImageName();
-        ImageProcessorCmd visualizeV = new VisualizeCmd(this.view, this.store,
-            Visualize.Channel.Value, name, newFileName);
-        visualizeV.execute();
-        this.storedImage();
+      case "Visualize Value":
+        answers = this.view.renderInput(questions, null);
+        if (answers == null) {
+          this.view.renderMessage("Visualize value cancelled.");
+          return;
+        } else if (answers[0].length() == 0) {
+          this.view.renderDialog(DialogType.Danger, "Image name cannot be empty.");
+          return;
+        } else {
+          newFileName = answers[0];
+          try {
+            ImageProcessorCmd visualize = new VisualizeCmd(this.fakeView, this.store, Channel.Value,
+                name, newFileName);
+            visualize.execute();
+          } catch (IllegalArgumentException e) {
+            this.view.renderDialog(DialogType.Danger, e.getMessage());
+          }
+        }
         break;
-      case "Visualize-Intensity":
-        this.questions();
-        this.answers();
-        this.name = this.view.getCurrentImageName();
-        ImageProcessorCmd visualizeI = new VisualizeCmd(this.view, this.store,
-            Visualize.Channel.Intensity, name, newFileName);
-        visualizeI.execute();
-        this.storedImage();
+      case "Visualize Intensity":
+        answers = this.view.renderInput(questions, null);
+        if (answers == null) {
+          this.view.renderMessage("Visualize intensity cancelled.");
+          return;
+        } else if (answers[0].length() == 0) {
+          this.view.renderDialog(DialogType.Danger, "Image name cannot be empty.");
+          return;
+        } else {
+          newFileName = answers[0];
+          try {
+            ImageProcessorCmd visualize = new VisualizeCmd(this.fakeView, this.store,
+                Channel.Intensity, name, newFileName);
+            visualize.execute();
+          } catch (IllegalArgumentException e) {
+            this.view.renderDialog(DialogType.Danger, e.getMessage());
+          }
+        }
         break;
       default:
+        // should never happen
         throw new IllegalArgumentException("Invalid command");
     }
+    this.view.displayImage(newFileName,
+        ImageUtils.getBufferedImage(this.store.retrieve(newFileName)),
+        ImageUtils.getChannelFrequencies(this.store.retrieve(newFileName)));
   }
 }
 

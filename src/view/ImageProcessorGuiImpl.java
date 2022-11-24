@@ -199,6 +199,9 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
 
   @Override
   public void setTransformations(String[] transformations) {
+    if (transformations == null) {
+      throw new IllegalArgumentException("Transformations cannot be null");
+    }
     this.transformationPanel.setTransformations(transformations);
     this.frame.repaint();
   }
