@@ -23,8 +23,8 @@ public class TransformationPanel extends JPanel {
     this.add(new JScrollPane(this.list), BorderLayout.CENTER);
     JButton transformButton = new JButton("Apply Transformation");
     this.add(transformButton, BorderLayout.SOUTH);
-    transformButton.addActionListener(
-        evt -> controller.transformImage(this.getSelectedTransformation()));
+    transformButton.addActionListener(evt -> controller.transformImage());
+    // this.getSelectedTransformation();
   }
 
   /**
