@@ -16,7 +16,7 @@ public interface ImageProcessorGuiController {
    * Controls the feature that removes an image that was previously loaded from the
    * ImageProcessorGui (view).
    */
-  void removeImage(String input);
+  void removeImage();
 
   /**
    * Controls the feature that saves the current image on the screen into the
