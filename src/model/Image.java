@@ -36,4 +36,12 @@ public interface Image {
    */
   Image copy();
 
+  /**
+   * Returns a histogram of RGB values and Intensity values of this image object.
+   *
+   * @return a 2D array of integers for this image.
+   */
+  int[][] makeHistogram();
+
+
 }
