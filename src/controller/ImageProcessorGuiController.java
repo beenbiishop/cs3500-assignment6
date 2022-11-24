@@ -1,5 +1,7 @@
 package controller;
 
+import view.ImageProcessorGui;
+
 /**
  * Represents a controller for the Image Processor program. It handles the interactions between the
  * user and the program for the graphical user interface.
