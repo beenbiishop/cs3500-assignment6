@@ -104,7 +104,7 @@ public interface ImageProcessorGui extends ImageProcessorView {
    * Represents a type of dialog's styling that can be displayed to a user.
    */
   enum DialogType {
-    Success, Warning, Danger, Note
+    Warning, Danger, Note
   }
 
 }

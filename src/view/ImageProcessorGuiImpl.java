@@ -87,6 +87,23 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
 
   @Override
   public void renderDialog(DialogType type, String message) {
+    if (type == null || message == null) {
+      throw new IllegalArgumentException("Arguments cannot be null");
+    }
+    switch (type) {
+      case Danger:
+        JOptionPane.showMessageDialog(this.frame, message, "Error", JOptionPane.ERROR_MESSAGE);
+        break;
+      case Warning:
+        JOptionPane.showMessageDialog(this.frame, message, "Info", JOptionPane.WARNING_MESSAGE);
+        break;
+      case Note:
+        JOptionPane.showMessageDialog(this.frame, message, "Note", JOptionPane.INFORMATION_MESSAGE);
+        break;
+      default:
+        // should never happen
+        throw new IllegalArgumentException("Invalid dialog type");
+    }
   }
 
   @Override
