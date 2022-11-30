@@ -7,14 +7,20 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
+import view.ImageProcessorGui;
 
+/**
+ * Represents the menu bar panel that is a part of the {@link ImageProcessorGui} view.
+ */
 public class MenubarPanel extends JMenuBar {
 
   private final JMenuItem loadItem;
   private final JMenuItem saveItem;
   private final JMenuItem quitItem;
-  private ImageProcessorGuiController controller;
 
+  /**
+   * Constructs a new menu bar panel.
+   */
   public MenubarPanel() {
     super();
 
@@ -44,7 +50,6 @@ public class MenubarPanel extends JMenuBar {
     if (controller == null) {
       throw new IllegalArgumentException("Controller cannot be null");
     }
-    this.controller = controller;
     loadItem.addActionListener(evt -> controller.loadImage());
     saveItem.addActionListener(evt -> controller.saveImage());
     quitItem.addActionListener(evt -> controller.quit());

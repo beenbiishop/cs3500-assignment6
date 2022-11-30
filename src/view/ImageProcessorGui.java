@@ -68,7 +68,7 @@ public interface ImageProcessorGui extends ImageProcessorView {
    *
    * @param transformations the list of transformations to display
    */
-  void setTransformations(String[] transformations);
+  void setTransformations(List<String> transformations);
 
   /**
    * Gets the name of the image tab that is currently selected.

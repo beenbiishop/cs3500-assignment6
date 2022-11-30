@@ -10,16 +10,16 @@ import controller.commands.VerticalFlipCmd;
 import controller.commands.VisualizeCmd;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import java.util.Map;
+import java.util.function.Function;
 import model.Image;
 import model.ImageUtils;
 import model.StoredImages;
 import model.transformations.Visualize.Channel;
 import view.ImageProcessorGui;
 import view.ImageProcessorGui.DialogType;
-import view.ImageProcessorView;
-import view.ImageProcessorViewImpl;
 import view.panels.MenubarPanel;
 import view.panels.TransformationPanel;
 
@@ -30,7 +30,7 @@ import view.panels.TransformationPanel;
 public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiController {
 
   private final StoredImages store;
-  private final ImageProcessorView fakeView;
+  private final Map<String, Function<String[], ImageProcessorCmd>> transformations;
   private ImageProcessorGui view;
 
   /**
@@ -43,7 +43,7 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
       throw new IllegalArgumentException("Store cannot be null.");
     }
     this.store = store;
-    this.fakeView = new ImageProcessorViewImpl(new StringBuilder());
+    this.transformations = new HashMap<>();
   }
 
   @Override
@@ -53,6 +53,7 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
     menu.addFeatures(this);
     TransformationPanel transformations = this.view.getTransformationPanel();
     transformations.addFeatures(this);
+    addTransformations();
   }
 
   @Override
@@ -63,8 +64,7 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
 
   @Override
   public void loadImage() {
-    String file = this.view.loadFile(
-        new FileNameExtensionFilter("Image Files", "jpg", "jpeg", "png", "bmp"));
+    String file = this.view.loadFile(null);
     if (file == null) {
       this.view.renderMessage("Load cancelled.");
       return;
@@ -90,6 +90,7 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
       command.execute();
     } catch (IllegalArgumentException e) {
       this.view.renderDialog(DialogType.Danger, e.getMessage());
+      return;
     }
 
     Image image = this.store.retrieve(newFileName);
@@ -100,8 +101,7 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
 
   @Override
   public void saveImage() {
-    String file = this.view.saveFile(
-        new FileNameExtensionFilter("Image Files", "jpg", "jpeg", "png", "bmp", "ppm"));
+    String file = this.view.saveFile(null);
     if (file == null) {
       this.view.renderMessage("Save cancelled.");
       return;
@@ -145,7 +145,7 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
         } else {
           newFileName = answers[0];
           try {
-            ImageProcessorCmd blur = new FilterCmd(this.fakeView, this.store, FilterType.Blur, name,
+            ImageProcessorCmd blur = new FilterCmd(this.view, this.store, FilterType.Blur, name,
                 newFileName);
             blur.execute();
           } catch (IllegalArgumentException e) {
@@ -170,7 +170,7 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
           newFileName = answers[0];
           brightnessVal = answers[1];
           try {
-            ImageProcessorCmd brightness = new BrightnessCmd(this.fakeView, this.store,
+            ImageProcessorCmd brightness = new BrightnessCmd(this.view, this.store,
                 Integer.parseInt(brightnessVal), name, newFileName);
             brightness.execute();
           } catch (IllegalArgumentException e) {
@@ -195,7 +195,7 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
           newFileName = answers[0];
           brightnessVal = answers[1];
           try {
-            ImageProcessorCmd brightness = new BrightnessCmd(this.fakeView, this.store,
+            ImageProcessorCmd brightness = new BrightnessCmd(this.view, this.store,
                 Integer.parseInt(brightnessVal) * -1, name, newFileName);
             brightness.execute();
           } catch (IllegalArgumentException e) {
@@ -214,8 +214,8 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
         } else {
           newFileName = answers[0];
           try {
-            ImageProcessorCmd greyscale = new FilterCmd(this.fakeView, this.store,
-                FilterType.Greyscale, name, newFileName);
+            ImageProcessorCmd greyscale = new FilterCmd(this.view, this.store, FilterType.Greyscale,
+                name, newFileName);
             greyscale.execute();
           } catch (IllegalArgumentException e) {
             this.view.renderDialog(DialogType.Danger, e.getMessage());
@@ -233,7 +233,7 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
         } else {
           newFileName = answers[0];
           try {
-            ImageProcessorCmd flip = new HorizontalFlipCmd(this.fakeView, this.store, name,
+            ImageProcessorCmd flip = new HorizontalFlipCmd(this.view, this.store, name,
                 newFileName);
             flip.execute();
           } catch (IllegalArgumentException e) {
@@ -252,8 +252,7 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
         } else {
           newFileName = answers[0];
           try {
-            ImageProcessorCmd flip = new VerticalFlipCmd(this.fakeView, this.store, name,
-                newFileName);
+            ImageProcessorCmd flip = new VerticalFlipCmd(this.view, this.store, name, newFileName);
             flip.execute();
           } catch (IllegalArgumentException e) {
             this.view.renderDialog(DialogType.Danger, e.getMessage());
@@ -271,8 +270,8 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
         } else {
           newFileName = answers[0];
           try {
-            ImageProcessorCmd sepia = new FilterCmd(this.fakeView, this.store, FilterType.Sepia,
-                name, newFileName);
+            ImageProcessorCmd sepia = new FilterCmd(this.view, this.store, FilterType.Sepia, name,
+                newFileName);
             sepia.execute();
           } catch (IllegalArgumentException e) {
             this.view.renderDialog(DialogType.Danger, e.getMessage());
@@ -290,7 +289,7 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
         } else {
           newFileName = answers[0];
           try {
-            ImageProcessorCmd sharpen = new FilterCmd(this.fakeView, this.store, FilterType.Sharpen,
+            ImageProcessorCmd sharpen = new FilterCmd(this.view, this.store, FilterType.Sharpen,
                 name, newFileName);
             sharpen.execute();
           } catch (IllegalArgumentException e) {
@@ -309,8 +308,8 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
         } else {
           newFileName = answers[0];
           try {
-            ImageProcessorCmd visualize = new VisualizeCmd(this.fakeView, this.store, Channel.Red,
-                name, newFileName);
+            ImageProcessorCmd visualize = new VisualizeCmd(this.view, this.store, Channel.Red, name,
+                newFileName);
             visualize.execute();
           } catch (IllegalArgumentException e) {
             this.view.renderDialog(DialogType.Danger, e.getMessage());
@@ -328,7 +327,7 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
         } else {
           newFileName = answers[0];
           try {
-            ImageProcessorCmd visualize = new VisualizeCmd(this.fakeView, this.store, Channel.Green,
+            ImageProcessorCmd visualize = new VisualizeCmd(this.view, this.store, Channel.Green,
                 name, newFileName);
             visualize.execute();
           } catch (IllegalArgumentException e) {
@@ -347,7 +346,7 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
         } else {
           newFileName = answers[0];
           try {
-            ImageProcessorCmd visualize = new VisualizeCmd(this.fakeView, this.store, Channel.Blue,
+            ImageProcessorCmd visualize = new VisualizeCmd(this.view, this.store, Channel.Blue,
                 name, newFileName);
             visualize.execute();
           } catch (IllegalArgumentException e) {
@@ -366,7 +365,7 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
         } else {
           newFileName = answers[0];
           try {
-            ImageProcessorCmd visualize = new VisualizeCmd(this.fakeView, this.store, Channel.Luma,
+            ImageProcessorCmd visualize = new VisualizeCmd(this.view, this.store, Channel.Luma,
                 name, newFileName);
             visualize.execute();
           } catch (IllegalArgumentException e) {
@@ -385,7 +384,7 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
         } else {
           newFileName = answers[0];
           try {
-            ImageProcessorCmd visualize = new VisualizeCmd(this.fakeView, this.store, Channel.Value,
+            ImageProcessorCmd visualize = new VisualizeCmd(this.view, this.store, Channel.Value,
                 name, newFileName);
             visualize.execute();
           } catch (IllegalArgumentException e) {
@@ -404,8 +403,8 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
         } else {
           newFileName = answers[0];
           try {
-            ImageProcessorCmd visualize = new VisualizeCmd(this.fakeView, this.store,
-                Channel.Intensity, name, newFileName);
+            ImageProcessorCmd visualize = new VisualizeCmd(this.view, this.store, Channel.Intensity,
+                name, newFileName);
             visualize.execute();
           } catch (IllegalArgumentException e) {
             this.view.renderDialog(DialogType.Danger, e.getMessage());
@@ -419,6 +418,44 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
     this.view.displayImage(newFileName,
         ImageUtils.getBufferedImage(this.store.retrieve(newFileName)),
         ImageUtils.getChannelFrequencies(this.store.retrieve(newFileName)));
+  }
+
+  /**
+   * Defines the transformations that can be applied to an image supported by this controller.
+   */
+  private void addTransformations() {
+    this.transformations.put("Blur",
+        (String[] s) -> new FilterCmd(this.view, this.store, FilterType.Blur, s[0], s[1]));
+    this.transformations.put("Brighten",
+        (String[] s) -> new BrightnessCmd(this.view, this.store, Integer.parseInt(s[2]), s[0],
+            s[1]));
+    this.transformations.put("Darken",
+        (String[] s) -> new BrightnessCmd(this.view, this.store, Integer.parseInt(s[2]) * -1, s[0],
+            s[1]));
+    this.transformations.put("Greyscale",
+        (String[] s) -> new FilterCmd(this.view, this.store, FilterType.Greyscale, s[0], s[1]));
+    this.transformations.put("Horizontal Flip",
+        (String[] s) -> new HorizontalFlipCmd(this.view, this.store, s[0], s[1]));
+    this.transformations.put("Vertical Flip",
+        (String[] s) -> new VerticalFlipCmd(this.view, this.store, s[0], s[1]));
+    this.transformations.put("Sepia",
+        (String[] s) -> new FilterCmd(this.view, this.store, FilterType.Sepia, s[0], s[1]));
+    this.transformations.put("Sharpen",
+        (String[] s) -> new FilterCmd(this.view, this.store, FilterType.Sharpen, s[0], s[1]));
+    this.transformations.put("Visualize Red",
+        (String[] s) -> new VisualizeCmd(this.view, this.store, Channel.Red, s[0], s[1]));
+    this.transformations.put("Visualize Green",
+        (String[] s) -> new VisualizeCmd(this.view, this.store, Channel.Green, s[0], s[1]));
+    this.transformations.put("Visualize Blue",
+        (String[] s) -> new VisualizeCmd(this.view, this.store, Channel.Blue, s[0], s[1]));
+    this.transformations.put("Visualize Value",
+        (String[] s) -> new VisualizeCmd(this.view, this.store, Channel.Value, s[0], s[1]));
+    this.transformations.put("Visualize Intensity",
+        (String[] s) -> new VisualizeCmd(this.view, this.store, Channel.Intensity, s[0], s[1]));
+    this.transformations.put("Visualize Luma",
+        (String[] s) -> new VisualizeCmd(this.view, this.store, Channel.Luma, s[0], s[1]));
+    List<String> list = new ArrayList<>(this.transformations.keySet());
+    this.view.setTransformations(list);
   }
 }
 

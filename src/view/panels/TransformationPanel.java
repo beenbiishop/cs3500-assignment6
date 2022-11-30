@@ -2,6 +2,10 @@ package view.panels;
 
 import controller.ImageProcessorGuiController;
 import java.awt.BorderLayout;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -41,20 +45,14 @@ public class TransformationPanel extends JPanel {
   }
 
   /**
-   * Sets the list of transformations to be available.
+   * Sets the transformations that can be applied to the image.
    *
-   * @param transformations the transformations to be available
+   * @param transformations the transformations that can be applied to the image
    */
-  public void setTransformations(String[] transformations) {
-    if (transformations == null) {
-      throw new IllegalArgumentException("Transformations cannot be null");
-    }
-    for (String transformation : transformations) {
-      if (transformation == null || transformation.length() == 0) {
-        throw new IllegalArgumentException("Transformation cannot be null or empty");
-      }
-    }
-    this.list.setListData(transformations);
+  public void setTransformations(List<String> transformations) {
+    String[] validated = validateTransformations(transformations);
+    Arrays.sort(validated);
+    this.list.setListData(validated);
     this.list.repaint();
     this.repaint();
   }
@@ -66,6 +64,25 @@ public class TransformationPanel extends JPanel {
    */
   private String getSelectedTransformation() {
     return this.list.getSelectedValue();
+  }
+
+  /**
+   * Takes a list of transformations and validates them by removing duplicate and null values.
+   *
+   * @param transformations the transformations to be validated
+   * @return the validated transformations as an array
+   */
+  private String[] validateTransformations(List<String> transformations) {
+    Set<String> set = new HashSet<>();
+    if (transformations == null) {
+      throw new IllegalArgumentException("Transformations cannot be null");
+    }
+    for (String transformation : transformations) {
+      if (transformation != null && transformation.length() > 0) {
+        set.add(transformation);
+      }
+    }
+    return set.toArray(new String[0]);
   }
 
 }

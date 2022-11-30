@@ -35,6 +35,9 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
   private final HistogramPanel histogramPanel = new HistogramPanel();
   private final MessagePanel messagePanel = new MessagePanel();
 
+  /**
+   * Constructs a new image processor gui.
+   */
   public ImageProcessorGuiImpl() {
     // Initialize the frame
     this.frame = new JFrame("Image Processor");
@@ -129,11 +132,10 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
 
   @Override
   public String loadFile(FileNameExtensionFilter filter) {
-    if (filter == null) {
-      throw new IllegalArgumentException("Filter cannot be null");
-    }
     JFileChooser chooser = new JFileChooser();
-    chooser.setFileFilter(filter);
+    if (filter != null) {
+      chooser.setFileFilter(filter);
+    }
     int result = chooser.showOpenDialog(this.frame);
     if (result == JFileChooser.APPROVE_OPTION) {
       return chooser.getSelectedFile().getAbsolutePath();
@@ -144,11 +146,10 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
 
   @Override
   public String saveFile(FileNameExtensionFilter filter) {
-    if (filter == null) {
-      throw new IllegalArgumentException("Filter cannot be null");
-    }
     JFileChooser chooser = new JFileChooser();
-    chooser.setFileFilter(filter);
+    if (filter != null) {
+      chooser.setFileFilter(filter);
+    }
     int result = chooser.showSaveDialog(this.frame);
     if (result == JFileChooser.APPROVE_OPTION) {
       return chooser.getSelectedFile().getAbsolutePath();
@@ -159,6 +160,7 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
 
   @Override
   public void renderMessage(String message) throws IllegalStateException {
+    message = message.replace("Command:", "");
     this.messagePanel.updateMessage(message);
   }
 
@@ -184,7 +186,7 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
   }
 
   @Override
-  public void setTransformations(String[] transformations) {
+  public void setTransformations(List<String> transformations) {
     if (transformations == null) {
       throw new IllegalArgumentException("Transformations cannot be null");
     }
