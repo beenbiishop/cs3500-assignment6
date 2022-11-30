@@ -26,15 +26,6 @@ public interface ImageProcessorGui extends ImageProcessorView {
    */
   void displayImage(String name, BufferedImage image, int[][] histogram);
 
-
-  /**
-   * Removes an image from the preview pane identified by the given file name.
-   *
-   * @param name the name of the image to remove
-   * @return true if the image was removed, false if the file name was not found
-   */
-  boolean removeImage(String name);
-
   /**
    * Renders a given dialog message to the user in the form of a popup.
    *

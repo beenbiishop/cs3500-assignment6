@@ -26,11 +26,6 @@ public interface ImageProcessorGuiController {
   void loadImage();
 
   /**
-   * Action listener to handler the removal of an image from the program.
-   */
-  void removeImage();
-
-  /**
    * Action listener to handle the saving of an image from the program.
    */
   void saveImage();

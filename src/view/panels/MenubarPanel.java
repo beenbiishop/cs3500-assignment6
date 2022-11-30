@@ -12,7 +12,6 @@ public class MenubarPanel extends JMenuBar {
 
   private final JMenuItem loadItem;
   private final JMenuItem saveItem;
-  private final JMenuItem removeItem;
   private final JMenuItem quitItem;
   private ImageProcessorGuiController controller;
 
@@ -28,9 +27,6 @@ public class MenubarPanel extends JMenuBar {
     this.saveItem = new JMenuItem("Save");
     saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.META_DOWN_MASK));
     fileMenu.add(saveItem);
-    this.removeItem = new JMenuItem("Remove");
-    removeItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.META_DOWN_MASK));
-    fileMenu.add(removeItem);
     this.quitItem = new JMenuItem("Quit");
     quitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.META_DOWN_MASK));
     fileMenu.add(quitItem);
@@ -51,7 +47,6 @@ public class MenubarPanel extends JMenuBar {
     this.controller = controller;
     loadItem.addActionListener(evt -> controller.loadImage());
     saveItem.addActionListener(evt -> controller.saveImage());
-    removeItem.addActionListener(evt -> controller.removeImage());
     quitItem.addActionListener(evt -> controller.quit());
   }
 

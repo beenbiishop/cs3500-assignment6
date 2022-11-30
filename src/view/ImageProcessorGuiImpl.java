@@ -68,21 +68,7 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
     this.previewPanel.addImageTab(name, image);
     this.previewPanel.displayImageTab(name);
     this.histogramPanel.updateHistogram(histogram);
-  }
-
-  @Override
-  public boolean removeImage(String name) {
-    if (name == null) {
-      throw new IllegalArgumentException("Name cannot be null");
-    }
-    if (this.images.containsKey(name)) {
-      this.images.remove(name);
-      this.histograms.remove(name);
-      this.previewPanel.removeImageTab(name);
-      return true;
-    } else {
-      return false;
-    }
+    this.frame.repaint();
   }
 
   @Override

@@ -39,24 +39,12 @@ public class PreviewPanel extends JTabbedPane {
     JScrollPane scrollPane = new JScrollPane(label);
     scrollPane.getVerticalScrollBar().setUnitIncrement(16);
     scrollPane.getHorizontalScrollBar().setUnitIncrement(16);
-    this.addTab(title, scrollPane);
-  }
-
-  /**
-   * Removes the image tab with the given title.
-   *
-   * @param title the title of the tab to remove
-   */
-  public boolean removeImageTab(String title) {
-    if (title == null || title.length() == 0) {
-      throw new IllegalArgumentException("Title cannot be null or empty");
+    if (this.indexOfTab(title) == -1) {
+      this.addTab(title, scrollPane);
+    } else {
+      this.setComponentAt(this.indexOfTab(title), scrollPane);
     }
-    int index = this.indexOfTab(title);
-    if (index == -1) {
-      return false;
-    }
-    this.removeTabAt(index);
-    return true;
+    this.repaint();
   }
 
   /**
@@ -77,6 +65,10 @@ public class PreviewPanel extends JTabbedPane {
    * @return the name of the currently selected image tab
    */
   public String getSelectedImageTab() {
-    return this.getTitleAt(this.getSelectedIndex());
+    try {
+      return this.getTitleAt(this.getSelectedIndex());
+    } catch (IndexOutOfBoundsException e) {
+      return null;
+    }
   }
 }

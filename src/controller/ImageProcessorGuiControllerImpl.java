@@ -21,6 +21,7 @@ import view.ImageProcessorGui.DialogType;
 import view.ImageProcessorView;
 import view.ImageProcessorViewImpl;
 import view.panels.MenubarPanel;
+import view.panels.TransformationPanel;
 
 /**
  * The class that implements the ImageProcessorGuiController. ImageProcessorGuiControllerImpl
@@ -43,22 +44,6 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
     }
     this.store = store;
     this.fakeView = new ImageProcessorViewImpl(new StringBuilder());
-    String[] transformations = new String[14];
-    transformations[0] = "Blur";
-    transformations[1] = "Brighten";
-    transformations[2] = "Darken";
-    transformations[3] = "Greyscale";
-    transformations[4] = "Horizontal Flip";
-    transformations[5] = "Vertical Flip";
-    transformations[6] = "Sepia";
-    transformations[7] = "Sharpen";
-    transformations[8] = "Visualize Red";
-    transformations[9] = "Visualize Green";
-    transformations[10] = "Visualize Blue";
-    transformations[11] = "Visualize Value";
-    transformations[12] = "Visualize Intensity";
-    transformations[13] = "Visualize Luma";
-    this.view.setTransformations(transformations);
   }
 
   @Override
@@ -66,6 +51,8 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
     this.view = view;
     MenubarPanel menu = this.view.getMenubarPanel();
     menu.addFeatures(this);
+    TransformationPanel transformations = this.view.getTransformationPanel();
+    transformations.addFeatures(this);
   }
 
   @Override
@@ -112,16 +99,9 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
   }
 
   @Override
-  public void removeImage() {
-    String name = this.view.getCurrentImageName();
-    this.view.removeImage(name);
-    this.store.remove(name);
-  }
-
-  @Override
   public void saveImage() {
     String file = this.view.saveFile(
-        new FileNameExtensionFilter("Image Files", "jpg", "jpeg", "png", "bmp"));
+        new FileNameExtensionFilter("Image Files", "jpg", "jpeg", "png", "bmp", "ppm"));
     if (file == null) {
       this.view.renderMessage("Save cancelled.");
       return;
@@ -134,7 +114,7 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
     }
 
     try {
-      ImageProcessorCmd command = new SaveCmd(this.fakeView, this.store, file, name);
+      ImageProcessorCmd command = new SaveCmd(this.view, this.store, file, name);
       command.execute();
     } catch (IllegalArgumentException e) {
       this.view.renderDialog(DialogType.Danger, e.getMessage());
@@ -144,10 +124,15 @@ public class ImageProcessorGuiControllerImpl implements ImageProcessorGuiControl
   @Override
   public void transformImage(String command) {
     String name = this.view.getCurrentImageName();
+    if (name == null) {
+      this.view.renderDialog(DialogType.Danger, "No image selected.");
+      return;
+    }
     List<String> questions = new ArrayList<>();
     questions.add("Choose a name to save this image as: ");
     String[] answers = null;
     String newFileName = null;
+    System.out.println(command);
     switch (command) {
       case "Blur":
         answers = this.view.renderInput(questions, null);
