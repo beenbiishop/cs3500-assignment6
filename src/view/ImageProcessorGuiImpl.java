@@ -123,6 +123,7 @@ public class ImageProcessorGuiImpl implements ImageProcessorGui {
         } else {
           answers[answerIndex] = fields.get(question).getText();
         }
+        answerIndex++;
       }
       return answers;
     } else {
