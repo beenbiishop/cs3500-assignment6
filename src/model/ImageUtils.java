@@ -1,6 +1,7 @@
 package model;
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 
 /**
  * Represents utilities for images.
@@ -37,6 +38,25 @@ public final class ImageUtils {
       }
     }
     return frequencies;
+  }
+
+  /**
+   * Returns a buffered image that is a copy of the given {@link Image} object.
+   *
+   * @param image the image to copy
+   * @return a buffered image that is a copy of the given image
+   */
+  public static BufferedImage getBufferedImage(Image image) {
+    Color[][] pixels = image.getPixels();
+    BufferedImage bufferedImage = new BufferedImage(image.getWidth(), image.getHeight(),
+        BufferedImage.TYPE_INT_RGB);
+    for (int i = 0; i < image.getHeight(); i++) {
+      for (int j = 0; j < image.getWidth(); j++) {
+        Color pixel = pixels[i][j];
+        bufferedImage.setRGB(j, i, pixel.getRGB());
+      }
+    }
+    return bufferedImage;
   }
 
 }

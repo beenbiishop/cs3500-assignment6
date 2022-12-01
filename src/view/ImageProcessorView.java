@@ -4,7 +4,6 @@ package view;
  * This interface represents the view of the Image Processor. It contains methods that the
  * controller can call to render the view.
  */
-// TODO: Document removing renderMenu and renderWelcome
 public interface ImageProcessorView {
 
   /**

@@ -16,9 +16,13 @@ transformations such as:
 * Blurring or sharpening an image
 * Filtering an image to greyscale or sepia
 
-The user interacts with the Image Processor through the command line interface (CLI). or they can
-also specify a script file to run as a command line argument, which will run the script and exit the
-program. More details on interacting with the program can be found in the [USEME.md](USEME.md) file.
+The user can interact with the program in one of three ways:
+
+1. Via the GUI interface (default - no args needed)
+2. Via the command line interface
+3. Via a script file
+
+More details on interacting with the program can be found in the [USEME.md](USEME.md) file.
 
 The program currently supports "PPM" images and any image type supported by the Java ImageIO
 library. We guarantee support for "PNG", "JPG/JPEG", and "BMP" images. The program will
@@ -35,6 +39,38 @@ permission. `ExampleImage2.png` was created by Ben Bishop, and has been used wit
 Instructions on how to use the program can be found in the [USEME.md](USEME.md) file.
 
 ## Changelog
+
+### Assignment 6 (11/22/2022)
+
+_Third version. Retained all existing functionality, and added a new view, allowing the user to view
+the program graphically rather than through text._
+
+#### Changes
+
+* Added `ImageUtils` class in order to encompass various utility methods used throughout the
+  program.
+    * `getBufferedImage` method to convert an `Image` to a `BufferedImage`
+    * `getChannelFrequencies` method to get the frequency of each color channel in an image
+* Added support for a GUI (graphical user interface) mode that allows all functionality to be
+  performed without any user interaction via the terminal
+    * Added `ImageProcessorGuiImpl` class (implements `ImageProcessorGui`) to represent the new GUI
+      view (extends the previously existing `ImageProcessor` interface)
+    * Added `ImageProcessorGuiControllerImpl` class (implements `ImageProcessorGuiController`) to
+      represent the controller for the GUI view
+    * Added various panel classes to represent the various panels in the GUI view. Each panel extend
+      various swing component classes to wrap the creation and interaction in simpler public
+      methods.
+        * `HistogramPanel` class to represent the histogram preview panel
+        * `MenubarPanel` class to represent the menu bar
+        * `MessagePanel` class to represent the message panel
+        * `PreviewPanel` class to represent the image preview panel
+        * `TransformationPanel` class to represent the transformation panel
+* Removed two methods from the `ImageProcessorView` interface (`renderMenu` and `renderWelcome`)
+  and implemented each method's functionality in the `ImageProcessorController` class to make
+  extensibility more dynamic. Updated the `ImageProcessorControllerImpl`
+  and `ImageProcessorViewImpl` classes to reflect this change.
+* Updated the `ImageProcessorRunner` class to support the new GUI view as the default, and modified
+  the method of running the program in a text view.
 
 ### Assignment 5 (11/10/2022)
 
@@ -151,6 +187,13 @@ To more easily visualize these classes, we have provided a class diagram below:
               image files into `Image` objects, and vice versa.
             * `ImageIOHandler` : Implements the `ImageFileHandler` interface for converting images
               into `Image` objects using the Java ImageIO library.
+    * `ImageProcessorGuiController` : Represents a features interface for the image processor. As
+      the user interacts with the program and clicks on features, the controller validates the
+      parameters and executes them. It also handles the exceptions thrown by the model.
+        * Implementations:
+            * `ImageProcessorGuiControllerImpl`: Implements the `ImageProcessorGuiController`
+              interface supporting features such as `loadImage`, `removeImage`, `saveImage`, `quit`,
+              and `transformImage`.
 
 ### Model
 
@@ -179,12 +222,13 @@ To more easily visualize these classes, we have provided a class diagram below:
               applies a sepia filter to an image.
             * `Greyscale` : Implements the `ImageTransformation` interface and represents a macro
               that applies a greyscale filter to an image.
-
     * `StoredImages` : Represents a collection of  `Image`s that have been loaded into the program
       by the user, identified by the image's file name selected by the user.
         * Implementations:
             * `StoredImagesImpl` : Implements the `StoredImages` interface. The stored images are
               represented by a `Map<String, Image>`, the string representing a fileName.
+        * `ImageUtils` : Represents a utility class for the model that currently supports two static
+          methods – `getBufferedImage` and `getChannelFrequencies`.
 
 ### View
 
@@ -194,6 +238,27 @@ To more easily visualize these classes, we have provided a class diagram below:
         * Implementations:
             * `ImageProcessorViewImpl` : Implements the ImageProcessorView interface and it's
               methods. Handles appending all the messages from the controller to the user.
+    * `ImageProcessorGui` : This graphical user interface represents the view of the Image
+      Processor. It contains methods that the controller can call to render the view.
+        * Implementations:
+            * `ImageProcessorGuiImpl` : Implements the ImageProcessorGui interface and it's methods.
+              Renders the view graphically and changes it according to the user's interactions.
+
+* Panels - The GUI view is composed of a number of panels, each of which is a separate class that is
+  an extension of a Java Swing object. These panels are:
+    * `HistogramPanel` : Represents the histogram panel (extends JPanel) that displays the currently
+      selected image's histogram chart of R, G, B, and Intensity values.
+    * `MenubarPanel` : Represents the menu bar (extends JMenuBar) that is a part of the view,
+      displays the program's different menu items such as `Load Image`, `Save Image`,
+      and `Quit Program`.
+    * `MessagePanel` : Represents the message panel (extends JPanel) that displays messages that do
+      not need to be displayed as popups to the user (e.g. success messages).
+    * `PreviewPanel` : Represents the preview panel (extends JTabbedPane) that displays all loaded
+      images as tabs, and allows the user to scroll around images that are too large to fit in the
+      frame.
+    * `TransformationPanel` : Represents the transformations panel that displays all the
+      transformations that can be applied to an image, with a button to apply the transformation
+      currently selected in the list.
 
 ### Main Class
 

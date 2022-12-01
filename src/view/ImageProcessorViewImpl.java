@@ -6,7 +6,6 @@ import java.io.IOException;
  * Implements the {@link ImageProcessorView} interface and handles the appending of messages sent to
  * the user by the controller.
  */
-// TODO: Document removal of renderMenu and renderWelcome
 public class ImageProcessorViewImpl implements ImageProcessorView {
 
   private final Appendable appendable;

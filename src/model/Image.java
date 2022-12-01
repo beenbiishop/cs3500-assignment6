@@ -1,7 +1,6 @@
 package model;
 
 import java.awt.Color;
-import java.awt.image.BufferedImage;
 
 /**
  * Represents an image and it's pixels.
@@ -36,11 +35,5 @@ public interface Image {
    */
   Image copy();
 
-  /**
-   * Returns this image as a {@link BufferedImage}.
-   *
-   * @return this image as a BufferedImage object
-   */
-  BufferedImage getBufferedImage();
 
 }

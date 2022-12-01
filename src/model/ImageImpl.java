@@ -1,7 +1,6 @@
 package model;
 
 import java.awt.Color;
-import java.awt.image.BufferedImage;
 
 
 /**
@@ -57,18 +56,6 @@ public class ImageImpl implements Image {
   @Override
   public ImageImpl copy() {
     return new ImageImpl(this.copyPixels(this.pixels));
-  }
-
-  @Override
-  public BufferedImage getBufferedImage() {
-    BufferedImage image = new BufferedImage(this.getWidth(), this.getHeight(),
-        BufferedImage.TYPE_INT_RGB);
-    for (int i = 0; i < this.getHeight(); i++) {
-      for (int j = 0; j < this.getWidth(); j++) {
-        image.setRGB(j, i, this.pixels[i][j].getRGB());
-      }
-    }
-    return image;
   }
 
   /**
