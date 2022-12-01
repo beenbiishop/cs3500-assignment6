@@ -4,15 +4,16 @@ _For a more detailed overview of the program, see the [README.md](README.md) fil
 
 ## Overview
 
-The image processor can currently be used in two ways: via the command line interface, or via an
-imported script file. The command line interface allows users to enter commands with real-time
-feedback displayed int the terminal window. The script file interface makes it easy to run a series
-of commands in a batch process.
+The image processor can currently be used in three ways: via a graphical user interface, via the
+command line interface, or via an imported script file. The graphical user interface allows users to
+perform all functions and transformations without textual input. The command line interface allows
+users to enter commands with real-time feedback displayed int the terminal window. The script file
+interface makes it easy to run a series of commands in a batch process.
 
 ## Supported Commands
 
-The following commands are supported by both the command line interface and the script file
-interface:
+The following commands are supported by all three interfaces. The command line interface and the
+script file interface use the syntax below:
 
 * "quit" - _quits the program_
 * "menu" - _displays the menu of commands_
@@ -34,11 +35,39 @@ interface:
 * "greyscale" `<filename>` `<new filename>` - _transforms an image to a new greyscale filtered
   image_
 
-## Command Line Interface
+This functionality is fully supported by the graphical user interface, but the loading/saving of
+images and quitting the program is handled by items in the menu bar (File > Load Image, File > Save
+Image, File > Quit Program). Once an image is loaded, the user can select the transformation they
+want to perform from the list of transformations in the sidebar.
+
+## Graphical User Interface (GUI)
+
+The GUI is the easiest way to use the image processor. It is simple to use and does not require any
+interaction with the terminal.
 
 1. Copy the `res/ImageProcessor.jar` file to the directory where you want to run the program.
 2. Open a terminal window and navigate to the directory where you copied the file.
 3. Enter the command `java -jar ImageProcessor.jar` to run the program.
+
+Upon launch, the user will be able to interact with images using the GUI. Loading an image can be
+done via File > Load Image, saving an image can be done via File > Save Image, and once finished,
+the user can exit the program via File > Quit Program. All loaded images are showed in the preview
+panel, with a new tab for each image. Any transformations can be applied to the image by selecting
+the desired transformation from the list of transformations in the sidebar, and the transformation
+will be applied to the currently selected image tab, and any information needed will be requested
+via a popup form.
+
+### Interface Preview
+
+Here is a preview of what the GUI looks like:
+
+![GUI Preview](gui.png)
+
+## Command Line Interface
+
+1. Copy the `res/ImageProcessor.jar` file to the directory where you want to run the program.
+2. Open a terminal window and navigate to the directory where you copied the file.
+3. Enter the command `java -jar ImageProcessor.jar -text` to run the program.
 
 Upon launch, the user will be shown a welcome message, with the option to "quit" the program or view
 a "menu" of available commands. After entering a command and hitting the return key, the program
@@ -60,17 +89,3 @@ be added for readability, but will not affect the program's execution.
     * _An example script file is provided in the `res` directory (`example-script.txt`)._
 7. The program will execute the commands in the script file, and display the success/failure of each
    command in the terminal window as if you were entering the commands manually.
-
-## Graphical User Interface
-
-1. When the program loads, navigate to the File menu item on the left side of the program. Here
-   select `Load` and select an image file when the FileChooser pops up.
-2. Now navigate to the right side of the program and select from the list of transitions which
-   transformation you would like to apply onto your current image.
-3. You may apply any number of transformations or choose to not apply any at all before
-   saving/loading.
-4. To save the image, navigate once more to the File menu item at the top left of the program. Here
-   select `Save`.
-5. To remove the current image on the screen, repeat the previous step but click `Remove` instead of
-   load.
-6. To quit the program all together, repeat the previous step but click `quit`.
