@@ -43,7 +43,7 @@ public interface ImageProcessorGui extends ImageProcessorView {
    *
    * @param questions the list of questions to ask
    * @param error     an optional error message to display (will not display if null)
-   * @return the list of inputted respond
+   * @return an array of responses to the questions
    */
   String[] renderInput(List<String> questions, String error);
 

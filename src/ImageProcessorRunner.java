@@ -60,7 +60,6 @@ public final class ImageProcessorRunner {
       controller.run();
     } else {
       System.out.println("Invalid arguments provided.");
-      return;
     }
   }
 }

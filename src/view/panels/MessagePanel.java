@@ -12,7 +12,7 @@ import view.ImageProcessorGui;
  */
 public class MessagePanel extends JPanel {
 
-  private JLabel messageLabel;
+  private final JLabel messageLabel;
 
   /**
    * Constructs a new message panel.

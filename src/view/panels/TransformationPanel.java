@@ -17,7 +17,7 @@ import view.ImageProcessorGui;
  */
 public class TransformationPanel extends JPanel {
 
-  private final JList<String> list = new JList<String>();
+  private final JList<String> list = new JList<>();
   private final JButton applyButton = new JButton("Apply Transformation");
   private ImageProcessorGuiController controller;
 
