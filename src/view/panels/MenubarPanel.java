@@ -26,14 +26,14 @@ public class MenubarPanel extends JMenuBar {
 
     // File Menu
     JMenu fileMenu = new JMenu("File");
-    this.loadItem = new JMenuItem("Load");
+    this.loadItem = new JMenuItem("Load Image");
     loadItem.setMnemonic(KeyEvent.VK_L);
     loadItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.META_DOWN_MASK));
     fileMenu.add(loadItem);
-    this.saveItem = new JMenuItem("Save");
+    this.saveItem = new JMenuItem("Save Image");
     saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.META_DOWN_MASK));
     fileMenu.add(saveItem);
-    this.quitItem = new JMenuItem("Quit");
+    this.quitItem = new JMenuItem("Quit Program");
     quitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.META_DOWN_MASK));
     fileMenu.add(quitItem);
 
